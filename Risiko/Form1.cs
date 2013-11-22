@@ -52,16 +52,10 @@ namespace Risiko
         {
             lblMessage.Text = "";
 
-            //z_asBitmap wird auf Größe von pBoxBackground gebracht
-            //z_asBitmap = new Bitmap(pBoxBackground.Width, pBoxBackground.Height);
-            //Graphics z wird aus z_asBitmap erstellt
-            //z = Graphics.FromImage(z_asBitmap);
-
-
             // für ländergrenze
             stift = new Pen(Color.Black, 2);
             //zum "löschen" der Anzeige
-            rubber = new SolidBrush(pBoxBackground.BackColor);
+            rubber = new SolidBrush(pnlMap.BackColor);
             //Für sonstiges, eigentliche Länder werden mit Ländereigenen Farbe gemalt
             objectbrush = new SolidBrush(Color.Blue);     
         }
@@ -86,47 +80,12 @@ namespace Risiko
         /// </summary>
         private void DrawMap()
         {
-            //z = pBoxBackground.CreateGraphics();a
-            //z_asBitmap wird auf Größe von pBoxBackground gebracht
-            z_asBitmap = new Bitmap(pBoxBackground.Width, pBoxBackground.Height);
-            //Graphics z wird aus z_asBitmap erstellt
-            z = Graphics.FromImage(z_asBitmap);
-            //RubberMap();
             Game.LoadCountriesFromDBSource();
+            z_asBitmap = new Bitmap(pnlMap.Width, pnlMap.Height);              
+            z = Graphics.FromImage(z_asBitmap);
+
             CheckFactor();
 
-
-
-            for (int i = 0;i < Game.numberOfCountries;++i)
-            {
-                Point[] tempPoints= Game.GiveCountryToDraw(i).corners;
-                Point[] realPoints = new Point[Game.GiveCountryToDraw(i).corners.Length];
-
-                for (int j = 0;j < realPoints.Length; ++j)
-                {
-                    realPoints[j].X = (tempPoints[j].X*Factor);
-                    realPoints[j].Y = (tempPoints[j].Y*Factor);
-                }
-
-                SolidBrush tempObjectbrush = new SolidBrush(Game.GiveCountryToDraw(i).colorOfCountry);
-                z.FillPolygon(tempObjectbrush, realPoints);
-                z.DrawPolygon(stift, realPoints);
-            }
-
-            //pBockBackground bekommt Bilddatei zugewiesen
-            pBoxBackground.Image = z_asBitmap;
-
-
-
-
-
-
-
-
-            /// temp
-            Bitmap tempBitmap = new Bitmap(pnlPBtemp.Width, pnlPBtemp.Height);              
-            Graphics tempz = Graphics.FromImage(tempBitmap);
-            Factor = 20;
             for (int i = 0; i < Game.numberOfCountries; ++i)
             {
                 Point[] tempPoints = Game.GiveCountryToDraw(i).corners;
@@ -139,12 +98,12 @@ namespace Risiko
                 }
 
                 SolidBrush tempObjectbrush = new SolidBrush(Game.GiveCountryToDraw(i).colorOfCountry);
-                tempz.FillPolygon(tempObjectbrush, realPoints);
-                tempz.DrawPolygon(stift, realPoints);
+                z.FillPolygon(tempObjectbrush, realPoints);
+                z.DrawPolygon(stift, realPoints);
             }
 
-            //pBockBackground bekommt Bilddatei zugewiesen
-            pBoxBackground.Image = tempBitmap;
+            //pnlMap bekommt Bilddatei zugewiesen
+            pnlMap.BackgroundImage = z_asBitmap;
         }
 
 
@@ -153,8 +112,8 @@ namespace Risiko
         /// </summary>
         private void CheckFactor()
         {
-            int temp1 = pBoxBackground.Width/Game.width;
-            int temp2 = pBoxBackground.Height/Game.height;
+            int temp1 = pnlMap.Width / Game.width;
+            int temp2 = pnlMap.Height / Game.height;
             if (temp1 > temp2)
                 Factor = temp2;
             else
@@ -169,13 +128,6 @@ namespace Risiko
         /// <param name="e"></param>
         private void ResizeForm(object sender, EventArgs e)
         {
-            pBoxBackground.Image = null;
-            Control control = (Control)sender;
-            //control.Size.Height = 700;
-            //pBoxBackground.Size.Height = control.Size.Height;
-            Size size = new Size(control.Size.Width, control.Size.Height);
-            pBoxBackground.Size = size;
-
             if (Game.numberOfCountries != 0)
             {
                 DrawMap();
@@ -187,12 +139,12 @@ namespace Risiko
         /// </summary>
         private void RubberMap()
         {
-            z_asBitmap = new Bitmap(pBoxBackground.Width, pBoxBackground.Height);
+            z_asBitmap = new Bitmap(pnlMap.Width, pnlMap.Height);
             z = Graphics.FromImage(z_asBitmap);
 
-            z.FillRectangle(rubber, 0,0,pBoxBackground.Width,pBoxBackground.Height);
+            z.FillRectangle(rubber, 0,0,pnlMap.Width,pnlMap.Height);
 
-            pBoxBackground.Image = z_asBitmap;
+            pnlMap.BackgroundImage = z_asBitmap;
         }
 
 
@@ -269,43 +221,10 @@ namespace Risiko
 
         }
 
-        private void pBoxBackground_MouseUp(object sender, MouseEventArgs e)
-        {
-            //clickedPosition = aktuelle Position der Maus in der PictureBox
-            Point clickedPosition = new Point(e.X, e.Y);
-
-            int temp = checkClickOnPolygon(clickedPosition);
-
-            if (temp == -1)
-            {
-                //kein Treffer
-            }
-            else
-            {
-                //Treffer auf Game.Countries[temp]
-                String ausgabe = (Game.countries[temp].name);
-                MessageBox.Show(ausgabe);
-            }
-        }
-
    private void Form1_MouseUp(object sender, MouseEventArgs e)
         {
            
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -334,18 +253,24 @@ namespace Risiko
             }
         }
 
-     
-        /// VERALTET
-        /// 
-        /// 
+        private void pnlMap_MouseUp(object sender, MouseEventArgs e)
+        {
+            //clickedPosition = aktuelle Position der Maus in der PictureBox
+            Point clickedPosition = new Point(e.X, e.Y);
 
+            int temp = checkClickOnPolygon(clickedPosition);
 
-        ///// <summary>
-        ///// "Löscht" die Anzeige, bei Veränderung
-        ///// </summary>
-        //private void ClearBackground()
-        //{
-        //    z.FillRectangle(rubber, 0, 0, pBoxBackground.Width, pBoxBackground.Height);
-        //}
+            if (temp == -1)
+            {
+                //kein Treffer
+            }
+            else
+            {
+                //Treffer auf Game.Countries[temp]
+                String ausgabe = (Game.countries[temp].name);
+                MessageBox.Show(ausgabe);
+            }
+        }
+
     }
 }

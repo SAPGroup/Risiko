@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.pBoxBackground = new System.Windows.Forms.PictureBox();
             this.btnDrawMap = new System.Windows.Forms.Button();
             this.lblMessage = new System.Windows.Forms.Label();
             this.menuSMain = new System.Windows.Forms.MenuStrip();
@@ -36,26 +35,9 @@
             this.kartenDateiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.bearbeitenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ansichtToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.pnlPBtemp = new System.Windows.Forms.Panel();
-            ((System.ComponentModel.ISupportInitialize)(this.pBoxBackground)).BeginInit();
+            this.pnlMap = new System.Windows.Forms.Panel();
             this.menuSMain.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // pBoxBackground
-            // 
-            this.pBoxBackground.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pBoxBackground.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(242)))), ((int)(((byte)(198)))));
-            this.pBoxBackground.Location = new System.Drawing.Point(12, 27);
-            this.pBoxBackground.Name = "pBoxBackground";
-            this.pBoxBackground.Size = new System.Drawing.Size(867, 574);
-            this.pBoxBackground.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pBoxBackground.TabIndex = 0;
-            this.pBoxBackground.TabStop = false;
-            this.pBoxBackground.Click += new System.EventHandler(this.pictureBox1_Click);
-            this.pBoxBackground.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pBoxBackground_MouseUp);
-            this.pBoxBackground.Resize += new System.EventHandler(this.ResizeForm);
             // 
             // btnDrawMap
             // 
@@ -117,22 +99,26 @@
             this.ansichtToolStripMenuItem.Size = new System.Drawing.Size(59, 20);
             this.ansichtToolStripMenuItem.Text = "Ansicht";
             // 
-            // pnlPBtemp
+            // pnlMap
             // 
-            this.pnlPBtemp.Location = new System.Drawing.Point(217, 152);
-            this.pnlPBtemp.Name = "pnlPBtemp";
-            this.pnlPBtemp.Size = new System.Drawing.Size(389, 287);
-            this.pnlPBtemp.TabIndex = 5;
+            this.pnlMap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlMap.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(242)))), ((int)(((byte)(198)))));
+            this.pnlMap.Location = new System.Drawing.Point(12, 24);
+            this.pnlMap.Name = "pnlMap";
+            this.pnlMap.Size = new System.Drawing.Size(867, 574);
+            this.pnlMap.TabIndex = 5;
+            this.pnlMap.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pnlMap_MouseUp);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(896, 655);
-            this.Controls.Add(this.pnlPBtemp);
+            this.Controls.Add(this.pnlMap);
             this.Controls.Add(this.lblMessage);
             this.Controls.Add(this.btnDrawMap);
-            this.Controls.Add(this.pBoxBackground);
             this.Controls.Add(this.menuSMain);
             this.ForeColor = System.Drawing.Color.Black;
             this.MainMenuStrip = this.menuSMain;
@@ -142,7 +128,6 @@
             this.ResizeEnd += new System.EventHandler(this.ResizeForm);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseUp);
             this.Resize += new System.EventHandler(this.ResizeForm);
-            ((System.ComponentModel.ISupportInitialize)(this.pBoxBackground)).EndInit();
             this.menuSMain.ResumeLayout(false);
             this.menuSMain.PerformLayout();
             this.ResumeLayout(false);
@@ -152,7 +137,6 @@
 
         #endregion
 
-        private System.Windows.Forms.PictureBox pBoxBackground;
         private System.Windows.Forms.Button btnDrawMap;
         private System.Windows.Forms.Label lblMessage;
         private System.Windows.Forms.MenuStrip menuSMain;
@@ -160,7 +144,7 @@
         private System.Windows.Forms.ToolStripMenuItem kartenDateiToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem bearbeitenToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ansichtToolStripMenuItem;
-        private System.Windows.Forms.Panel pnlPBtemp;
+        private System.Windows.Forms.Panel pnlMap;
     }
 }
 
