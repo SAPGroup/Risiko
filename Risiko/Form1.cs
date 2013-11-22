@@ -41,10 +41,7 @@ namespace Risiko
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void pictureBox1_Click(object sender, EventArgs e)
-        {
-            
-        }
+      
 
 
         // Lädt alle wichtigen Elemente
@@ -260,9 +257,9 @@ namespace Risiko
         }
 
 
-   private void Form1_MouseUp(object sender, MouseEventArgs e)
+        private void Form1_MouseUp(object sender, MouseEventArgs e)
         {
-           
+           //kann nicht gelöscht werden
         }
 
 
