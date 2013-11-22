@@ -221,6 +221,25 @@ namespace Risiko
 
         }
 
+        private void pBoxBackground_MouseUp(object sender, MouseEventArgs e)
+        {
+            //clickedPosition = aktuelle Position der Maus in der PictureBox
+            Point clickedPosition = new Point(e.X, e.Y);
+
+            int temp = checkClickOnPolygon(clickedPosition);
+
+            if (temp == -1)
+            {
+                //kein Treffer
+            }
+            else
+            {
+                //Treffer auf Game.Countries[temp]
+                String ausgabe = (Game.countries[temp].name);
+                MessageBox.Show(ausgabe);
+            }
+        }
+
    private void Form1_MouseUp(object sender, MouseEventArgs e)
         {
            
@@ -257,7 +276,7 @@ namespace Risiko
         {
             //clickedPosition = aktuelle Position der Maus in der PictureBox
             Point clickedPosition = new Point(e.X, e.Y);
-
+     
             int temp = checkClickOnPolygon(clickedPosition);
 
             if (temp == -1)
