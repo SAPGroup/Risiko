@@ -253,9 +253,14 @@ namespace Risiko
             else
             {
                 //Treffer auf Game.Countries[temp]
+                MessageBox.Show(Game.countries[temp].name);
             }
         }
 
+   private void Form1_MouseUp(object sender, MouseEventArgs e)
+        {
+         
+        }
 
 
 
@@ -298,6 +303,7 @@ namespace Risiko
             }
         }
 
+     
         /// VERALTET
         /// 
         /// 

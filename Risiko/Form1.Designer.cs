@@ -131,6 +131,7 @@
             this.Text = "Risiko";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResizeEnd += new System.EventHandler(this.ResizeForm);
+            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseUp);
             this.Resize += new System.EventHandler(this.ResizeForm);
             ((System.ComponentModel.ISupportInitialize)(this.pBoxBackground)).EndInit();
             this.menuSMain.ResumeLayout(false);
