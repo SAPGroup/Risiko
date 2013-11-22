@@ -36,6 +36,7 @@
             this.kartenDateiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.bearbeitenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ansichtToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pnlPBtemp = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.pBoxBackground)).BeginInit();
             this.menuSMain.SuspendLayout();
             this.SuspendLayout();
@@ -116,11 +117,19 @@
             this.ansichtToolStripMenuItem.Size = new System.Drawing.Size(59, 20);
             this.ansichtToolStripMenuItem.Text = "Ansicht";
             // 
+            // pnlPBtemp
+            // 
+            this.pnlPBtemp.Location = new System.Drawing.Point(217, 152);
+            this.pnlPBtemp.Name = "pnlPBtemp";
+            this.pnlPBtemp.Size = new System.Drawing.Size(389, 287);
+            this.pnlPBtemp.TabIndex = 5;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(896, 655);
+            this.Controls.Add(this.pnlPBtemp);
             this.Controls.Add(this.lblMessage);
             this.Controls.Add(this.btnDrawMap);
             this.Controls.Add(this.pBoxBackground);
@@ -151,6 +160,7 @@
         private System.Windows.Forms.ToolStripMenuItem kartenDateiToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem bearbeitenToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ansichtToolStripMenuItem;
+        private System.Windows.Forms.Panel pnlPBtemp;
     }
 }
 
