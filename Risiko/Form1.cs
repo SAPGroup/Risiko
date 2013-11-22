@@ -27,7 +27,8 @@ namespace Risiko
         //GameField
         GameField Game = new GameField();
         
-        
+        //Landerkennung
+        private Boolean autoLanderkennung = false;
         
         
         public Form1()
@@ -309,6 +310,40 @@ namespace Risiko
                 String ausgabe = (Game.countries[temp].name);
                 MessageBox.Show(ausgabe);
             }
+        }
+
+        private void autoLanderkennungAktivierenToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem tempItem = autoLanderkennungAktivierenToolStripMenuItem;
+            if (autoLanderkennung == false)
+            {
+                tempItem.Text = "Auto Landerkennung deaktivieren...";
+                autoLanderkennung = true;
+            }
+            else
+            {
+                tempItem.Text = "Auto Landerkennung aktivieren...";
+                autoLanderkennung = false;
+            }
+
+        }
+
+        private void pnlMap_MouseMove(object sender, MouseEventArgs e)
+        {
+            Point clickedPosition = new Point(e.X, e.Y);
+            int temp;
+
+            if (autoLanderkennung == true)
+            {
+                temp = checkClickOnPolygon(clickedPosition);
+
+                if (temp != -1)
+                {
+                    //Land farblich hervorheben und Karte neu zeichnen
+                }
+              
+            }
+           
         }
 
     }
