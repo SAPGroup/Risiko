@@ -115,6 +115,36 @@ namespace Risiko
 
             //pBockBackground bekommt Bilddatei zugewiesen
             pBoxBackground.Image = z_asBitmap;
+
+
+
+
+
+
+
+
+            /// temp
+            Bitmap tempBitmap = new Bitmap(pnlPBtemp.Width, pnlPBtemp.Height);              
+            Graphics tempz = Graphics.FromImage(tempBitmap);
+            Factor = 20;
+            for (int i = 0; i < Game.numberOfCountries; ++i)
+            {
+                Point[] tempPoints = Game.GiveCountryToDraw(i).corners;
+                Point[] realPoints = new Point[Game.GiveCountryToDraw(i).corners.Length];
+
+                for (int j = 0; j < realPoints.Length; ++j)
+                {
+                    realPoints[j].X = (tempPoints[j].X * Factor);
+                    realPoints[j].Y = (tempPoints[j].Y * Factor);
+                }
+
+                SolidBrush tempObjectbrush = new SolidBrush(Game.GiveCountryToDraw(i).colorOfCountry);
+                tempz.FillPolygon(tempObjectbrush, realPoints);
+                tempz.DrawPolygon(stift, realPoints);
+            }
+
+            //pBockBackground bekommt Bilddatei zugewiesen
+            pBoxBackground.Image = tempBitmap;
         }
 
 
