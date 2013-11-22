@@ -131,6 +131,15 @@ namespace Risiko
             get { return Countries; }
         }
 
+        /// <summary>
+        /// Get- und Set-Methode des Quellpfades (Source) (DB- mit der Karte)
+        /// </summary>
+        public string dataSourceString
+        {
+            get { return DataSourceString; }
+            set { DataSourceString = value; }
+        }
+
 
         //
         // Konstruktoren
@@ -386,7 +395,20 @@ namespace Risiko
                 return Color.Blue;
             else if (tempColor == "green")
                 return Color.Green;
-            else return Color.White;
+            else if (tempColor == "yellow")
+                return Color.Yellow;
+            else if (tempColor == "red")
+                return Color.Red;
+            else if (tempColor == "white")
+                return Color.White;
+            else if (tempColor == "black")
+                return Color.Black;
+            else if (tempColor == "violet")
+                return Color.Violet;
+            else if (tempColor == "orange")
+                return Color.Orange;
+            else 
+                return Color.White;
         }
 
 

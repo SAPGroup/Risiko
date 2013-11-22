@@ -77,6 +77,7 @@ namespace Risiko
 
         /// <summary>
         /// zeichnet die Karte (Game)
+        /// Lädt außerdem die Daten der Karte aus der SourceDB
         /// </summary>
         private void DrawMap()
         {
@@ -108,6 +109,43 @@ namespace Risiko
 
 
         /// <summary>
+        /// Draw Map without Load, Lädt die Daten nicht erneut aus der Datenbank
+        /// womit diese Funktion schneller ist, außerdem ist das Laden
+        /// nur anfangs notwendig und würde zu Geschwindigkeitsproblemen führen
+        /// </summary>
+        private void DrawMapWoLoad()
+        {
+            int tempOldFactor = Factor;
+            CheckFactor();
+            if (tempOldFactor != Factor)
+            {
+                z_asBitmap = new Bitmap(pnlMap.Width, pnlMap.Height);
+                z = Graphics.FromImage(z_asBitmap);
+
+                for (int i = 0; i < Game.numberOfCountries; ++i)
+                {
+                    Point[] tempPoints = Game.GiveCountryToDraw(i).corners;
+                    Point[] realPoints = new Point[Game.GiveCountryToDraw(i).corners.Length];
+
+                    for (int j = 0; j < realPoints.Length; ++j)
+                    {
+                        realPoints[j].X = (tempPoints[j].X * Factor);
+                        realPoints[j].Y = (tempPoints[j].Y * Factor);
+                    }
+
+                    SolidBrush tempObjectbrush = new SolidBrush(Game.GiveCountryToDraw(i).colorOfCountry);
+                    z.FillPolygon(tempObjectbrush, realPoints);
+                    z.DrawPolygon(stift, realPoints);
+                }
+
+                //pnlMap bekommt Bilddatei zugewiesen
+                pnlMap.BackgroundImage = z_asBitmap;
+            }
+            
+        }
+
+
+        /// <summary>
         /// Setzt den Faktor der Darstellung der Karte
         /// </summary>
         private void CheckFactor()
@@ -130,7 +168,7 @@ namespace Risiko
         {
             if (Game.numberOfCountries != 0)
             {
-                DrawMap();
+                DrawMapWoLoad();
             }
         }
 
@@ -221,24 +259,6 @@ namespace Risiko
 
         }
 
-        private void pBoxBackground_MouseUp(object sender, MouseEventArgs e)
-        {
-            //clickedPosition = aktuelle Position der Maus in der PictureBox
-            Point clickedPosition = new Point(e.X, e.Y);
-
-            int temp = checkClickOnPolygon(clickedPosition);
-
-            if (temp == -1)
-            {
-                //kein Treffer
-            }
-            else
-            {
-                //Treffer auf Game.Countries[temp]
-                String ausgabe = (Game.countries[temp].name);
-                MessageBox.Show(ausgabe);
-            }
-        }
 
    private void Form1_MouseUp(object sender, MouseEventArgs e)
         {
