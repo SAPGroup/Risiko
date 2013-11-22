@@ -227,7 +227,7 @@ namespace Risiko
                     if (checkCountries[i].corners[j].Y * Factor < yMin) { yMin = checkCountries[i].corners[j].Y * Factor; }
                 }
 
-                String test = checkCountries[i].name;
+               
                
                 //Treffer auf ein Land wenn
                 // -der Mausklicks innerhalb der äußersten Eckpunkte liegt und
