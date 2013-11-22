@@ -227,7 +227,8 @@ namespace Risiko
                     if (checkCountries[i].corners[j].Y * Factor < yMin) { yMin = checkCountries[i].corners[j].Y * Factor; }
                 }
 
-
+                String test = checkCountries[i].name;
+               
                 //Treffer auf ein Land wenn
                 // -der Mausklicks innerhalb der äußersten Eckpunkte liegt und
                 //  die Farbe des getroffenen Pixels
@@ -236,11 +237,13 @@ namespace Risiko
                 if (((clickedPosition.X <= xMax && clickedPosition.X >= xMin) &&
                          (clickedPosition.Y <= yMax && clickedPosition.Y >= yMin))
                         &&
-                        (((colorOfClickedPixel.R == checkCountries[i].colorOfCountry.R) &&
+                        (((colorOfClickedPixel.A ==checkCountries[i].colorOfCountry.A) &&
+                          (colorOfClickedPixel.R == checkCountries[i].colorOfCountry.R) &&
                           (colorOfClickedPixel.B == checkCountries[i].colorOfCountry.B) &&
                           (colorOfClickedPixel.G == checkCountries[i].colorOfCountry.G))
                          ||
-                         (((colorOfClickedPixel.R == colorOfBorder.R) &&
+                         (((colorOfClickedPixel.A == colorOfBorder.A) &&
+                           (colorOfClickedPixel.R == colorOfBorder.R) &&
                            (colorOfClickedPixel.B == colorOfBorder.B) &&
                            (colorOfClickedPixel.G == colorOfBorder.G))))
                     )
