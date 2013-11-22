@@ -253,8 +253,8 @@ namespace Risiko
             else
             {
                 //Treffer auf Game.Countries[temp]
-                String ausgabe = (Game.countries[temp].name);
-                MessageBox.Show(ausgabe);
+                
+                MessageBox.Show(Game.countries[temp].name);
             }
         }
 
