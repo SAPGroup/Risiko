@@ -86,7 +86,7 @@ namespace Risiko
         /// </summary>
         private void DrawMap()
         {
-            //z = pBoxBackground.CreateGraphics();
+            //z = pBoxBackground.CreateGraphics();a
             //z_asBitmap wird auf Größe von pBoxBackground gebracht
             z_asBitmap = new Bitmap(pBoxBackground.Width, pBoxBackground.Height);
             //Graphics z wird aus z_asBitmap erstellt
