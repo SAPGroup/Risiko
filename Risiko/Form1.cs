@@ -139,6 +139,7 @@ namespace Risiko
         /// <param name="e"></param>
         private void ResizeForm(object sender, EventArgs e)
         {
+            pBoxBackground.Image = null;
             Control control = (Control)sender;
             //control.Size.Height = 700;
             //pBoxBackground.Size.Height = control.Size.Height;
