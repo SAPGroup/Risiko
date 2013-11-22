@@ -139,6 +139,12 @@ namespace Risiko
         /// <param name="e"></param>
         private void ResizeForm(object sender, EventArgs e)
         {
+            Control control = (Control)sender;
+            control.Size.Height = 700;
+            pBoxBackground.Size.Height = control.Size.Height;
+            Size size = new Size(ActiveForm.Size.Width - 60, ActiveForm.Size.Height -100);
+            //pBoxBackground.Size = size;
+
             if (Game.numberOfCountries != 0)
             {
                 DrawMap();

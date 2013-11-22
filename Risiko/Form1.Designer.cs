@@ -52,6 +52,7 @@
             this.pBoxBackground.TabIndex = 0;
             this.pBoxBackground.TabStop = false;
             this.pBoxBackground.Click += new System.EventHandler(this.pictureBox1_Click);
+            this.pBoxBackground.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pBoxBackground_MouseUp);
             this.pBoxBackground.Resize += new System.EventHandler(this.ResizeForm);
             // 
             // btnDrawMap
