@@ -49,6 +49,7 @@
             this.pBoxBackground.Location = new System.Drawing.Point(12, 27);
             this.pBoxBackground.Name = "pBoxBackground";
             this.pBoxBackground.Size = new System.Drawing.Size(867, 574);
+            this.pBoxBackground.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pBoxBackground.TabIndex = 0;
             this.pBoxBackground.TabStop = false;
             this.pBoxBackground.Click += new System.EventHandler(this.pictureBox1_Click);

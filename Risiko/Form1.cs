@@ -140,10 +140,10 @@ namespace Risiko
         private void ResizeForm(object sender, EventArgs e)
         {
             Control control = (Control)sender;
-            control.Size.Height = 700;
-            pBoxBackground.Size.Height = control.Size.Height;
-            Size size = new Size(ActiveForm.Size.Width - 60, ActiveForm.Size.Height -100);
-            //pBoxBackground.Size = size;
+            //control.Size.Height = 700;
+            //pBoxBackground.Size.Height = control.Size.Height;
+            Size size = new Size(control.Size.Width, control.Size.Height);
+            pBoxBackground.Size = size;
 
             if (Game.numberOfCountries != 0)
             {
@@ -296,13 +296,6 @@ namespace Risiko
                 MessageBox.Show("Abbruch. Es wurde keine Datei geöffnet.");
             }
         }
-
-
-
-
-
-
-
 
         /// VERALTET
         /// 
