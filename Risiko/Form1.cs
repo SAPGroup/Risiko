@@ -169,16 +169,11 @@ namespace Risiko
         /// <param name="e"></param>
         private void ResizeForm(object sender, EventArgs e)
         {
-            btnDrawMap.Location = new Point(12, Size.Height - 80);
             pBoxBackground.Image = null;
-            
-            
-            //Control control = (Control)sender;
+            Control control = (Control)sender;
             //control.Size.Height = 700;
             //pBoxBackground.Size.Height = control.Size.Height;
-            int temp1 = Size.Width;
-            int temp2 = Size.Height;
-            Size size = new Size(Size.Width - 50, Size.Height - 100);
+            Size size = new Size(control.Size.Width, control.Size.Height);
             pBoxBackground.Size = size;
 
             if (Game.numberOfCountries != 0)
@@ -288,13 +283,14 @@ namespace Risiko
             else
             {
                 //Treffer auf Game.Countries[temp]
-                MessageBox.Show(Game.countries[temp].name);
+                String ausgabe = (Game.countries[temp].name);
+                MessageBox.Show(ausgabe);
             }
         }
 
    private void Form1_MouseUp(object sender, MouseEventArgs e)
         {
-         
+           
         }
 
 
