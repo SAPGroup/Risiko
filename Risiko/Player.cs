@@ -14,6 +14,11 @@ namespace Risiko
         private string[] OwnedCountries;
 
         /// <summary>
+        /// Name des Spielers
+        /// </summary>
+        private string Name;
+
+        /// <summary>
         /// Die Anzahl der Männer in den besetzten Länder (Index passend zu OwnedCountries)
         /// </summary>
         private int[] UnitsInCountry;
@@ -23,6 +28,18 @@ namespace Risiko
         /// </summary>
         private int UnitsPT;
 
+        /// <summary>
+        /// Basiskonstruktor
+        /// </summary>
+        public Player()
+        {
+            Name = "";
+            UnitsPT = 0;
+        }
 
+        public Player(string NameIn, string[] OwnedCountriesIn)
+        {
+            
+        }
     }
 }

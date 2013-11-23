@@ -28,7 +28,7 @@ namespace Risiko
         GameField Game = new GameField();
         
         //Landerkennung
-        private Boolean autoLanderkennung = false;
+        private bool autoLanderkennung = false;
         
         //Speichert temporär die alte Farbe des ausgewählten Landes
         private Color tempSelCountry = Color.White;
@@ -305,6 +305,8 @@ namespace Risiko
             if(ofd.ShowDialog() == DialogResult.OK)
                 foreach (string s in ofd.FileNames)
                 {
+                    //später bei mehreren Source-Dateien
+                    //Game.dataSourceString = s;
                     MessageBox.Show("Öffnen: " + s);
                 }
             else
@@ -384,6 +386,12 @@ namespace Risiko
               
             }
            
+        }
+
+        private void neuesSpieToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Player[] tempPlayers = new Player[5];
+            Game.SetPlayersOnly(0,2, tempPlayers);
         }
 
     }

@@ -35,8 +35,9 @@
             this.kartenDateiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.bearbeitenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ansichtToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.pnlMap = new System.Windows.Forms.Panel();
             this.autoLanderkennungAktivierenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pnlMap = new System.Windows.Forms.Panel();
+            this.neuesSpieToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuSMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -76,7 +77,8 @@
             // dateiToolStripMenuItem
             // 
             this.dateiToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.kartenDateiToolStripMenuItem});
+            this.kartenDateiToolStripMenuItem,
+            this.neuesSpieToolStripMenuItem});
             this.dateiToolStripMenuItem.Name = "dateiToolStripMenuItem";
             this.dateiToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
             this.dateiToolStripMenuItem.Text = "Datei";
@@ -102,6 +104,13 @@
             this.ansichtToolStripMenuItem.Size = new System.Drawing.Size(59, 20);
             this.ansichtToolStripMenuItem.Text = "Ansicht";
             // 
+            // autoLanderkennungAktivierenToolStripMenuItem
+            // 
+            this.autoLanderkennungAktivierenToolStripMenuItem.Name = "autoLanderkennungAktivierenToolStripMenuItem";
+            this.autoLanderkennungAktivierenToolStripMenuItem.Size = new System.Drawing.Size(249, 22);
+            this.autoLanderkennungAktivierenToolStripMenuItem.Text = "Auto Landerkennung aktivieren...";
+            this.autoLanderkennungAktivierenToolStripMenuItem.Click += new System.EventHandler(this.autoLanderkennungAktivierenToolStripMenuItem_Click);
+            // 
             // pnlMap
             // 
             this.pnlMap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -115,12 +124,12 @@
             this.pnlMap.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pnlMap_MouseMove);
             this.pnlMap.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pnlMap_MouseUp);
             // 
-            // autoLanderkennungAktivierenToolStripMenuItem
+            // neuesSpieToolStripMenuItem
             // 
-            this.autoLanderkennungAktivierenToolStripMenuItem.Name = "autoLanderkennungAktivierenToolStripMenuItem";
-            this.autoLanderkennungAktivierenToolStripMenuItem.Size = new System.Drawing.Size(249, 22);
-            this.autoLanderkennungAktivierenToolStripMenuItem.Text = "Auto Landerkennung aktivieren...";
-            this.autoLanderkennungAktivierenToolStripMenuItem.Click += new System.EventHandler(this.autoLanderkennungAktivierenToolStripMenuItem_Click);
+            this.neuesSpieToolStripMenuItem.Name = "neuesSpieToolStripMenuItem";
+            this.neuesSpieToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.neuesSpieToolStripMenuItem.Text = "Neues Spiel";
+            this.neuesSpieToolStripMenuItem.Click += new System.EventHandler(this.neuesSpieToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -157,6 +166,7 @@
         private System.Windows.Forms.ToolStripMenuItem ansichtToolStripMenuItem;
         private System.Windows.Forms.Panel pnlMap;
         private System.Windows.Forms.ToolStripMenuItem autoLanderkennungAktivierenToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem neuesSpieToolStripMenuItem;
     }
 }
 

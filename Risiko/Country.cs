@@ -35,6 +35,11 @@ namespace Risiko
         /// </summary>
         private int UnitsStationed;
 
+        /// <summary>
+        /// Array der in dem die Nachbarländer gespeichert sind
+        /// </summary>
+        private string[] NeighboringCountries;
+
 
 
         //
@@ -67,11 +72,13 @@ namespace Risiko
         /// </summary>
         /// <param name="CornersIn"></param>
         /// <param name="NameIn"></param>
-        public void SetValues(Point[] CornersIn, string NameIn, Color ColorIn)
+        public void SetValues(Point[] CornersIn, string NameIn, Color ColorIn, int OwnerIn, int UnitsStationedIn)
         {
-            this.Corners = CornersIn;
-            this.Name = NameIn;
-            this.ColorOfCountry = ColorIn;
+            Corners = CornersIn;
+            Name = NameIn;
+            ColorOfCountry = ColorIn;
+            UnitsStationed = UnitsStationedIn;
+            Owner = OwnerIn;
         }
 
         //

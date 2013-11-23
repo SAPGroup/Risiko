@@ -37,7 +37,6 @@ namespace Risiko
         /// </summary>
         private bool NumberOfCountriesAccesible = true;
 
-
         /// <summary>
         /// Länder des Spielfelds
         /// </summary>
@@ -48,6 +47,11 @@ namespace Risiko
         /// Anzahl der Spieler
         /// </summary>
         private int NumberOfPlayers;
+
+        /// <summary>
+        /// alle Spieler
+        /// </summary>
+        private Player[] Players;
 
         /// <summary>
         /// Index des Spielers deraktuell am Zug ist, bei 0 beginnend
@@ -140,6 +144,15 @@ namespace Risiko
             set { DataSourceString = value; }
         }
 
+        /// <summary>
+        /// Get- und Set-Methode der Spieler
+        /// </summary>
+        public Player[] players
+        {
+            get { return Players; }
+            set { Players = value; }
+        }
+
 
         //
         // Konstruktoren
@@ -208,10 +221,11 @@ namespace Risiko
         /// </summary>
         /// <param name="TurnOfPlayerIn"></param>
         /// <param name="NumberOfPlayersIn"></param>
-        public void SetPlayersOnly(int TurnOfPlayerIn, int NumberOfPlayersIn)
+        public void SetPlayersOnly(int TurnOfPlayerIn, int NumberOfPlayersIn, Player[] PlayersIn)
         {
             TurnOfPlayer = TurnOfPlayerIn;
             NumberOfPlayers = NumberOfPlayersIn;
+            Players = PlayersIn;
         }
 
 
