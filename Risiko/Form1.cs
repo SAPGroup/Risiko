@@ -255,11 +255,12 @@ namespace Risiko
                           (colorOfClickedPixel.R == checkCountries[i].colorOfCountry.R) &&
                           (colorOfClickedPixel.B == checkCountries[i].colorOfCountry.B) &&
                           (colorOfClickedPixel.G == checkCountries[i].colorOfCountry.G))
-                         ||
-                         (((colorOfClickedPixel.A == colorOfBorder.A) &&
-                           (colorOfClickedPixel.R == colorOfBorder.R) &&
-                           (colorOfClickedPixel.B == colorOfBorder.B) &&
-                           (colorOfClickedPixel.G == colorOfBorder.G))))
+                         //||
+                         //(((colorOfClickedPixel.A == colorOfBorder.A) &&
+                         //  (colorOfClickedPixel.R == colorOfBorder.R) &&
+                         //  (colorOfClickedPixel.B == colorOfBorder.B) &&
+                         //  (colorOfClickedPixel.G == colorOfBorder.G)))
+                         )
                     )
                 {
                     //Bei einem Treffer wird der Rückgabewert auf den getroffenen Index gesetzt
@@ -323,25 +324,11 @@ namespace Risiko
 
             int temp = checkClickOnPolygon(clickedPosition);
 
-            if (temp == -1)
+            if (temp != -1)
             {
-                //kein Treffer
+                MessageBox.Show(Game.countries[temp].name);
             }
-            else
-            {
-                //Treffer auf Game.Countries[temp]
-                if (tempIndex != -1)
-                {
-                    Game.countries[tempIndex].colorOfCountry = tempSelCountry;
-                }
-                tempSelCountry = Game.countries[temp].colorOfCountry;
-                Game.countries[temp].colorOfCountry = Color.Yellow;
-                tempIndex = temp;
-                DrawFlag = true;
-                DrawMapWoLoad();
-                String ausgabe = (Game.countries[temp].name);
-                MessageBox.Show(ausgabe);
-            }
+            
         }
 
         private void autoLanderkennungAktivierenToolStripMenuItem_Click(object sender, EventArgs e)
@@ -369,9 +356,30 @@ namespace Risiko
             {
                 temp = checkClickOnPolygon(clickedPosition);
 
-                if (temp != -1)
+                if (temp == -1 && tempIndex != -1)
                 {
-                    //Land farblich hervorheben und Karte neu zeichnen
+                    //kein Treffer
+                    Game.countries[tempIndex].colorOfCountry = tempSelCountry;
+                    tempIndex = -1;
+                    DrawFlag = true;
+                    DrawMapWoLoad();
+                }
+                else if (temp != -1)
+                {
+                    //Treffer auf Game.Countries[temp]
+                    if (temp != tempIndex)
+                    {
+                        if (tempIndex != -1)
+                        {
+                            Game.countries[tempIndex].colorOfCountry = tempSelCountry;
+                        }
+                        tempSelCountry = Game.countries[temp].colorOfCountry;
+                        Game.countries[temp].colorOfCountry = Color.Yellow;
+                        tempIndex = temp;
+                        DrawFlag = true;
+                        DrawMapWoLoad();
+                        
+                    }
                 }
               
             }
