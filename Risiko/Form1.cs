@@ -33,6 +33,9 @@ namespace Risiko
         //Speichert temporär die alte Farbe des ausgewählten Landes
         private Color tempSelCountry = Color.White;
 
+        // false, wenn die Karte noch nicht gezeichnet wurde (würde sonst zu Fehlern in CheckClickOnPolygon führen)
+        private bool DrawnMap = false;
+
 
         //Bei Klick wichtig!
         //Flag die festlegt ob Karte neu gezeichnet werden soll, obwohl keine Änderung im Factor vorhanden ist
@@ -115,6 +118,7 @@ namespace Risiko
 
             //pnlMap bekommt Bilddatei zugewiesen
             pnlMap.BackgroundImage = z_asBitmap;
+            DrawnMap = true;
         }
 
 
@@ -204,74 +208,91 @@ namespace Risiko
         /// </summary>
         public int checkClickOnPolygon(Point clickedPosition)
         {
-
-            //Farbe von geklicktem Pixel, sowie von der Randfarbe des Landes werden gesetzt
-            Color colorOfClickedPixel = z_asBitmap.GetPixel(clickedPosition.X, clickedPosition.Y);
-            Color colorOfBorder = Color.Black;
-
-            //Länder, die überprüft werden sollen, werden in Array checkCountries[] geladen
-            Country[] checkCountries = Game.countries;
-
-
-            //Rückgabewert = clickedCountryIndex
-            //Rückgabewert = -1  --> kein Treffer
-            //Rückgabewert > 0   --> Treffer auf Countries[cklickedCountryIndex]
-            int clickedCountryIndex = -1;
-            int xMin = 0, xMax = 0, yMin = 0, yMax = 0;
-
-            CheckFactor();
-
-
-            //For Schleife, die für jedes Polygon(=Land) einmal durchlaufen wird --> jedes mal wird überprüft ob der Click ein Land getroffen hat
-            for (int i = 0; i < checkCountries.Length; i++)
+            // Um Fehler bei aktivierter Autoerkennung und noch nicht gezeichneter Karte zu vermiden
+            if (DrawnMap == true)
             {
+                //Farbe von geklicktem Pixel, sowie von der Randfarbe des Landes werden gesetzt
+                Color colorOfClickedPixel = z_asBitmap.GetPixel(clickedPosition.X, clickedPosition.Y);
+                Color colorOfBorder = Color.Black;
 
-                //Setzt die Minimalen und Maximalen Koordinatenpunkte auf die Werte des ersten Eckpunkts des Polygons
-                xMin = checkCountries[i].corners[0].X * Factor;
-                xMax = checkCountries[i].corners[0].X * Factor;
-                yMin = checkCountries[i].corners[0].Y * Factor;
-                yMax = checkCountries[i].corners[0].Y * Factor;
+                //Länder, die überprüft werden sollen, werden in Array checkCountries[] geladen
+                Country[] checkCountries = Game.countries;
 
-                //Die Eckpunkte des Vierecks,das um das Polygon gelegt wird, werden bestimmt und in xMin, xMax, yMin, yMax geschrieben
-                for (int j = 1; j < checkCountries[i].corners.Length; j++)
+
+                //Rückgabewert = clickedCountryIndex
+                //Rückgabewert = -1  --> kein Treffer
+                //Rückgabewert > 0   --> Treffer auf Countries[cklickedCountryIndex]
+                int clickedCountryIndex = -1;
+                int xMin = 0, xMax = 0, yMin = 0, yMax = 0;
+
+                CheckFactor();
+
+
+                //For Schleife, die für jedes Polygon(=Land) einmal durchlaufen wird --> jedes mal wird überprüft ob der Click ein Land getroffen hat
+                for (int i = 0;i < checkCountries.Length;i++)
                 {
-                    if (checkCountries[i].corners[j].X * Factor > xMax) { xMax = checkCountries[i].corners[j].X * Factor; }
-                    if (checkCountries[i].corners[j].X * Factor < xMin) { xMin = checkCountries[i].corners[j].X * Factor; }
-                    if (checkCountries[i].corners[j].Y * Factor > yMax) { yMax = checkCountries[i].corners[j].Y * Factor; }
-                    if (checkCountries[i].corners[j].Y * Factor < yMin) { yMin = checkCountries[i].corners[j].Y * Factor; }
-                }
 
-               
-               
-                //Treffer auf ein Land wenn
-                // -der Mausklicks innerhalb der äußersten Eckpunkte liegt und
-                //  die Farbe des getroffenen Pixels
-                //      - entweder der Landesfarbe 
-                //      - oder der Farbe des Randes von dem jeweiligen Land entspricht
-                if (((clickedPosition.X <= xMax && clickedPosition.X >= xMin) &&
+                    //Setzt die Minimalen und Maximalen Koordinatenpunkte auf die Werte des ersten Eckpunkts des Polygons
+                    xMin = checkCountries[i].corners[0].X*Factor;
+                    xMax = checkCountries[i].corners[0].X*Factor;
+                    yMin = checkCountries[i].corners[0].Y*Factor;
+                    yMax = checkCountries[i].corners[0].Y*Factor;
+
+                    //Die Eckpunkte des Vierecks,das um das Polygon gelegt wird, werden bestimmt und in xMin, xMax, yMin, yMax geschrieben
+                    for (int j = 1;j < checkCountries[i].corners.Length;j++)
+                    {
+                        if (checkCountries[i].corners[j].X*Factor > xMax)
+                        {
+                            xMax = checkCountries[i].corners[j].X*Factor;
+                        }
+                        if (checkCountries[i].corners[j].X*Factor < xMin)
+                        {
+                            xMin = checkCountries[i].corners[j].X*Factor;
+                        }
+                        if (checkCountries[i].corners[j].Y*Factor > yMax)
+                        {
+                            yMax = checkCountries[i].corners[j].Y*Factor;
+                        }
+                        if (checkCountries[i].corners[j].Y*Factor < yMin)
+                        {
+                            yMin = checkCountries[i].corners[j].Y*Factor;
+                        }
+                    }
+
+
+
+                    //Treffer auf ein Land wenn
+                    // -der Mausklicks innerhalb der äußersten Eckpunkte liegt und
+                    //  die Farbe des getroffenen Pixels
+                    //      - entweder der Landesfarbe 
+                    //      - oder der Farbe des Randes von dem jeweiligen Land entspricht
+                    if (((clickedPosition.X <= xMax && clickedPosition.X >= xMin) &&
                          (clickedPosition.Y <= yMax && clickedPosition.Y >= yMin))
                         &&
-                        (((colorOfClickedPixel.A ==checkCountries[i].colorOfCountry.A) &&
+                        (((colorOfClickedPixel.A == checkCountries[i].colorOfCountry.A) &&
                           (colorOfClickedPixel.R == checkCountries[i].colorOfCountry.R) &&
                           (colorOfClickedPixel.B == checkCountries[i].colorOfCountry.B) &&
                           (colorOfClickedPixel.G == checkCountries[i].colorOfCountry.G))
-                         //||
-                         //(((colorOfClickedPixel.A == colorOfBorder.A) &&
-                         //  (colorOfClickedPixel.R == colorOfBorder.R) &&
-                         //  (colorOfClickedPixel.B == colorOfBorder.B) &&
-                         //  (colorOfClickedPixel.G == colorOfBorder.G)))
-                         )
-                    )
-                {
-                    //Bei einem Treffer wird der Rückgabewert auf den getroffenen Index gesetzt
-                    clickedCountryIndex = i;
+                        //||
+                        //(((colorOfClickedPixel.A == colorOfBorder.A) &&
+                        //  (colorOfClickedPixel.R == colorOfBorder.R) &&
+                        //  (colorOfClickedPixel.B == colorOfBorder.B) &&
+                        //  (colorOfClickedPixel.G == colorOfBorder.G)))
+                        )
+                        )
+                    {
+                        //Bei einem Treffer wird der Rückgabewert auf den getroffenen Index gesetzt
+                        clickedCountryIndex = i;
+
+                    }
 
                 }
 
+                return clickedCountryIndex;
             }
-
-            return clickedCountryIndex;
-
+            else
+                // bei Fehler
+                return -1;
         }
 
         /// <summary>
@@ -317,8 +338,11 @@ namespace Risiko
 
 
 
-
-
+        /// <summary>
+        ///  MouseUP (ende eines Klicks)- Methode des Pnl der Map
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void pnlMap_MouseUp(object sender, MouseEventArgs e)
         {
             //clickedPosition = aktuelle Position der Maus in der PictureBox
@@ -354,6 +378,8 @@ namespace Risiko
             Point clickedPosition = new Point(e.X, e.Y);
             int temp;
 
+            // hier könnte man DrawnMap (bool (Map bereits gezeichnet)) auch abfragen, jedoch unnötig
+            // da bereits in CheckClickOnPolygon
             if (autoLanderkennung == true)
             {
                 temp = checkClickOnPolygon(clickedPosition);
@@ -379,8 +405,7 @@ namespace Risiko
                         Game.countries[temp].colorOfCountry = Color.Yellow;
                         tempIndex = temp;
                         DrawFlag = true;
-                        DrawMapWoLoad();
-                        
+                        DrawMapWoLoad();                   
                     }
                 }
               
