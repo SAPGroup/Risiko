@@ -33,8 +33,12 @@ namespace Risiko
         //Speichert temporär die alte Farbe des ausgewählten Landes
         private Color tempSelCountry = Color.White;
 
+
+        //Bei Klick wichtig!
         //Flag die festlegt ob Karte neu gezeichnet werden soll, obwohl keine Änderung im Factor vorhanden ist
         private bool DrawFlag = false;
+        // temporärer Index des zuletzt angklickten Landes
+        private int tempIndex = -1;
 
         
         public Form1()
@@ -326,8 +330,13 @@ namespace Risiko
             else
             {
                 //Treffer auf Game.Countries[temp]
+                if (tempIndex != -1)
+                {
+                    Game.countries[tempIndex].colorOfCountry = tempSelCountry;
+                }
                 tempSelCountry = Game.countries[temp].colorOfCountry;
                 Game.countries[temp].colorOfCountry = Color.Yellow;
+                tempIndex = temp;
                 DrawFlag = true;
                 DrawMapWoLoad();
                 String ausgabe = (Game.countries[temp].name);
