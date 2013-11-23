@@ -30,6 +30,12 @@ namespace Risiko
         //Landerkennung
         private Boolean autoLanderkennung = false;
         
+        //Speichert temporär die alte Farbe des ausgewählten Landes
+        private Color tempSelCountry = Color.White;
+
+        //Flag die festlegt ob Karte neu gezeichnet werden soll, obwohl keine Änderung im Factor vorhanden ist
+        private bool DrawFlag = false;
+
         
         public Form1()
         {
@@ -54,6 +60,8 @@ namespace Risiko
             stift = new Pen(Color.Black, 2);
             //zum "löschen" der Anzeige
             rubber = new SolidBrush(pnlMap.BackColor);
+
+            //Nicht benötigt
             //Für sonstiges, eigentliche Länder werden mit Ländereigenen Farbe gemalt
             objectbrush = new SolidBrush(Color.Blue);     
         }
@@ -115,7 +123,7 @@ namespace Risiko
         {
             int tempOldFactor = Factor;
             CheckFactor();
-            if (tempOldFactor != Factor)
+            if (tempOldFactor != Factor | DrawFlag == true)
             {
                 z_asBitmap = new Bitmap(pnlMap.Width, pnlMap.Height);
                 z = Graphics.FromImage(z_asBitmap);
@@ -138,6 +146,7 @@ namespace Risiko
 
                 //pnlMap bekommt Bilddatei zugewiesen
                 pnlMap.BackgroundImage = z_asBitmap;
+                DrawFlag = false;
             }
             
         }
@@ -158,7 +167,7 @@ namespace Risiko
 
 
         /// <summary>
-        /// ResizeMethode der Form1
+        /// ResizeMethode der Form1, zeichnet Map erneut und bestimmt Factor neu
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -171,7 +180,7 @@ namespace Risiko
         }
 
         /// <summary>
-        /// "Löscht" die Karte
+        /// "Löscht" die Karte, bisher nicht benötigt
         /// </summary>
         private void RubberMap()
         {
@@ -260,11 +269,17 @@ namespace Risiko
 
         }
 
-
+        /// <summary>
+        /// Leer!!
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Form1_MouseUp(object sender, MouseEventArgs e)
         {
-           //kann nicht gelöscht werden
+            //kein Inhalt, wird durch die einzelnen MouseUp-events der einzelnen Bedienelemente abgedeckt
+            //kann nicht gelöscht werden
         }
+
 
 
 
@@ -293,11 +308,15 @@ namespace Risiko
             }
         }
 
+
+
+
+
         private void pnlMap_MouseUp(object sender, MouseEventArgs e)
         {
             //clickedPosition = aktuelle Position der Maus in der PictureBox
             Point clickedPosition = new Point(e.X, e.Y);
-     
+
             int temp = checkClickOnPolygon(clickedPosition);
 
             if (temp == -1)
@@ -307,6 +326,10 @@ namespace Risiko
             else
             {
                 //Treffer auf Game.Countries[temp]
+                tempSelCountry = Game.countries[temp].colorOfCountry;
+                Game.countries[temp].colorOfCountry = Color.Yellow;
+                DrawFlag = true;
+                DrawMapWoLoad();
                 String ausgabe = (Game.countries[temp].name);
                 MessageBox.Show(ausgabe);
             }
