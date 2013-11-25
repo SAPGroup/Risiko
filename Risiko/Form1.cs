@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.OleDb;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -125,7 +126,8 @@ namespace Risiko
         /// <summary>
         /// Draw Map without Load, Lädt die Daten nicht erneut aus der Datenbank
         /// womit diese Funktion schneller ist, außerdem ist das Laden
-        /// nur anfangs notwendig und würde zu Geschwindigkeitsproblemen führen
+        /// nur anfangs notwendig und würde zu Geschwindigkeitseinußen führen
+        /// jedoch wird durch das neu-setzten der Bitmap ein Flackern erzeugt
         /// </summary>
         private void DrawMapWoLoad()
         {
@@ -221,7 +223,7 @@ namespace Risiko
 
                 //Rückgabewert = clickedCountryIndex
                 //Rückgabewert = -1  --> kein Treffer
-                //Rückgabewert > 0   --> Treffer auf Countries[cklickedCountryIndex]
+                //Rückgabewert >= 0   --> Treffer auf Countries[cklickedCountryIndex]
                 int clickedCountryIndex = -1;
                 int xMin = 0, xMax = 0, yMin = 0, yMax = 0;
 
@@ -373,42 +375,57 @@ namespace Risiko
 
         }
 
+
+        /// <summary>
+        /// MouseMove (Bewegung der Maus über Bedienelemnt)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void pnlMap_MouseMove(object sender, MouseEventArgs e)
         {
-            Point clickedPosition = new Point(e.X, e.Y);
-            int temp;
-
             // hier könnte man DrawnMap (bool (Map bereits gezeichnet)) auch abfragen, jedoch unnötig
             // da bereits in CheckClickOnPolygon
             if (autoLanderkennung == true)
             {
-                temp = checkClickOnPolygon(clickedPosition);
+                Point clickedPosition = new Point(e.X, e.Y);
+                int temp = checkClickOnPolygon(clickedPosition);
 
-                if (temp == -1 && tempIndex != -1)
+
+                if (temp == -1 & tempIndex != -1)
                 {
                     //kein Treffer
-                    Game.countries[tempIndex].colorOfCountry = tempSelCountry;
-                    tempIndex = -1;
-                    DrawFlag = true;
-                    DrawMapWoLoad();
-                }
-                else if (temp != -1)
+
+                    // auskommentiert da Abfrage zu oft (auch in einem Land) auftritt
+                    // wieso liefert CheckClickOnPolygon direkt in einem Land -1? 
+
+                    //Game.countries[tempIndex].colorOfCountry = tempSelCountry;
+                    
+                    //DrawCountry(tempIndex);
+                    //tempIndex = -1;
+                    //DrawFlag = true;
+                }                  
+                else if (temp != -1 & temp != tempIndex)
                 {
-                    //Treffer auf Game.Countries[temp]
-                    if (temp != tempIndex)
+                    //bei Treffer                
+                    if (tempIndex != -1)
                     {
-                        if (tempIndex != -1)
-                        {
-                            Game.countries[tempIndex].colorOfCountry = tempSelCountry;
-                        }
-                        tempSelCountry = Game.countries[temp].colorOfCountry;
-                        Game.countries[temp].colorOfCountry = Color.Yellow;
-                        tempIndex = temp;
-                        DrawFlag = true;
-                        DrawMapWoLoad();                   
+                        Game.countries[tempIndex].colorOfCountry = tempSelCountry;
+                        DrawCountry(tempIndex);
                     }
+                    
+                    tempSelCountry = Game.countries[temp].colorOfCountry;
+                    Game.countries[temp].colorOfCountry = Color.Yellow;
+                    
+                    tempIndex = temp;
+                    DrawFlag = true;
+
+                    //pnlMap_Paint(sender, e, temp);
+                    
+                    DrawCountry(temp);
+                    
+                    // Flackert, da jedes mal das BackGroundImage des pnl neu gesetzt wird
+                    //DrawMapWoLoad();
                 }
-              
             }
            
         }
@@ -418,6 +435,58 @@ namespace Risiko
             Player[] tempPlayers = new Player[5];
             Game.SetPlayersOnly(0,2, tempPlayers);
         }
+        
+        // normales Zeichnen auf pnl??? 
+        private void DrawCountry(int tempIndex, int tempIndex2)
+        {
+            Graphics temp;
+            temp = pnlMap.CreateGraphics();
 
+            Point[] tempPoints = Game.GiveCountryToDraw(tempIndex).corners;
+            Point[] realPoints = new Point[Game.GiveCountryToDraw(tempIndex).corners.Length];
+
+            for (int j = 0; j < realPoints.Length; ++j)
+            {
+                realPoints[j].X = (tempPoints[j].X * Factor);
+                realPoints[j].Y = (tempPoints[j].Y * Factor);
+            }
+
+            SolidBrush tempObjectbrush = new SolidBrush(Game.GiveCountryToDraw(tempIndex).colorOfCountry);
+            temp.FillPolygon(tempObjectbrush, realPoints);
+            temp.DrawPolygon(stift, realPoints);
+
+            Point[] tempPoints2 = Game.GiveCountryToDraw(tempIndex2).corners;
+            Point[] realPoints2 = new Point[Game.GiveCountryToDraw(tempIndex2).corners.Length];
+
+            for (int j = 0; j < realPoints.Length; ++j)
+            {
+                realPoints2[j].X = (tempPoints2[j].X * Factor);
+                realPoints2[j].Y = (tempPoints2[j].Y * Factor);
+            }
+
+            tempObjectbrush = new SolidBrush(Game.GiveCountryToDraw(tempIndex2).colorOfCountry);
+            temp.FillPolygon(tempObjectbrush, realPoints);
+            temp.DrawPolygon(stift, realPoints);
+        }
+
+        // normales Zeichnen auf pnl??? 
+        private void DrawCountry(int IndexIn)
+        {
+            Graphics temp;
+            temp = pnlMap.CreateGraphics();
+
+            Point[] tempPoints = Game.GiveCountryToDraw(IndexIn).corners;
+            Point[] realPoints = new Point[Game.GiveCountryToDraw(IndexIn).corners.Length];
+
+            for (int i = 0; i < realPoints.Length; ++i)
+            {
+                realPoints[i].X = (tempPoints[i].X * Factor);
+                realPoints[i].Y = (tempPoints[i].Y * Factor);
+            }
+
+            SolidBrush tempObjectbrush = new SolidBrush(Game.GiveCountryToDraw(IndexIn).colorOfCountry);
+            temp.FillPolygon(tempObjectbrush, realPoints);
+            temp.DrawPolygon(stift, realPoints);
+        }
     }
 }

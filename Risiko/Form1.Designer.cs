@@ -33,11 +33,11 @@
             this.menuSMain = new System.Windows.Forms.MenuStrip();
             this.dateiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.kartenDateiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.neuesSpieToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.bearbeitenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ansichtToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.autoLanderkennungAktivierenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlMap = new System.Windows.Forms.Panel();
-            this.neuesSpieToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuSMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -86,9 +86,16 @@
             // kartenDateiToolStripMenuItem
             // 
             this.kartenDateiToolStripMenuItem.Name = "kartenDateiToolStripMenuItem";
-            this.kartenDateiToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.kartenDateiToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.kartenDateiToolStripMenuItem.Text = "Datei öffnen...";
             this.kartenDateiToolStripMenuItem.Click += new System.EventHandler(this.kartenDateiToolStripMenuItem_Click);
+            // 
+            // neuesSpieToolStripMenuItem
+            // 
+            this.neuesSpieToolStripMenuItem.Name = "neuesSpieToolStripMenuItem";
+            this.neuesSpieToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.neuesSpieToolStripMenuItem.Text = "Neues Spiel";
+            this.neuesSpieToolStripMenuItem.Click += new System.EventHandler(this.neuesSpieToolStripMenuItem_Click);
             // 
             // bearbeitenToolStripMenuItem
             // 
@@ -124,13 +131,6 @@
             this.pnlMap.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pnlMap_MouseMove);
             this.pnlMap.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pnlMap_MouseUp);
             // 
-            // neuesSpieToolStripMenuItem
-            // 
-            this.neuesSpieToolStripMenuItem.Name = "neuesSpieToolStripMenuItem";
-            this.neuesSpieToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.neuesSpieToolStripMenuItem.Text = "Neues Spiel";
-            this.neuesSpieToolStripMenuItem.Click += new System.EventHandler(this.neuesSpieToolStripMenuItem_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -140,6 +140,7 @@
             this.Controls.Add(this.lblMessage);
             this.Controls.Add(this.btnDrawMap);
             this.Controls.Add(this.menuSMain);
+            this.DoubleBuffered = true;
             this.ForeColor = System.Drawing.Color.Black;
             this.MainMenuStrip = this.menuSMain;
             this.Name = "Form1";

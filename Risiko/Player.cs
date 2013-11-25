@@ -28,6 +28,8 @@ namespace Risiko
         /// </summary>
         private int UnitsPT;
 
+
+        // Konstruktoren
         /// <summary>
         /// Basiskonstruktor
         /// </summary>
@@ -37,9 +39,57 @@ namespace Risiko
             UnitsPT = 0;
         }
 
+        /// <summary>
+        /// Konstruktor mit Name und besetzten Ländern
+        /// </summary>
+        /// <param name="NameIn"></param>
+        /// <param name="OwnedCountriesIn"></param>
         public Player(string NameIn, string[] OwnedCountriesIn)
         {
-            
+            Name = NameIn;
+            OwnedCountries = OwnedCountriesIn;
+        }
+
+
+        // Set- und Get- Methoden
+        /// <summary>
+        /// Set und Get des Namens des Spielers
+        /// </summary>
+        public string name
+        {
+            get { return Name; }
+            set
+            {
+                if (value != "")
+                    Name = value;
+            }
+        }
+
+        /// <summary>
+        /// Set- und Get- Methode der Einheiten der besetzten Ländern
+        /// </summary>
+        public int[] unitsInCountry
+        {
+            get { return UnitsInCountry; }
+            set { UnitsInCountry = value; }
+        }
+
+        /// <summary>
+        /// Set- und Get- Methode der besetzten Ländern
+        /// </summary>
+        public string[] ownedCountries
+        {
+            get { return OwnedCountries; }
+            set { OwnedCountries = value; }
+        }
+
+        /// <summary>
+        /// Set- und Get- Methode der Einehiten pro Runde
+        /// </summary>
+        public int unitsPT
+        {
+            get { return UnitsPT; }
+            set { UnitsPT = value; }
         }
     }
 }
