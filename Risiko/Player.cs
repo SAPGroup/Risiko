@@ -21,10 +21,11 @@ namespace Risiko
         /// <summary>
         /// Die Anzahl der Männer in den besetzten Länder (Index passend zu OwnedCountries)
         /// </summary>
-        private int[] UnitsInCountry;
+        private int[] UnitsInCountries;
 
         /// <summary>
         /// Die Anzahl der Männer die der Spieler am Anfang des Zuges setzten kann
+        /// wird berechnet, nicht gesetzt
         /// </summary>
         private int UnitsPT;
 
@@ -70,8 +71,8 @@ namespace Risiko
         /// </summary>
         public int[] unitsInCountry
         {
-            get { return UnitsInCountry; }
-            set { UnitsInCountry = value; }
+            get { return UnitsInCountries; }
+            set { UnitsInCountries = value; }
         }
 
         /// <summary>
@@ -90,6 +91,13 @@ namespace Risiko
         {
             get { return UnitsPT; }
             set { UnitsPT = value; }
+        }
+
+        public void SetAllValues(string NameIn, string[] OwnedCountriesIn, int[] UnitsInCountriesIn)
+        {
+            Name = NameIn;
+            OwnedCountries = OwnedCountriesIn;
+            UnitsInCountries = UnitsInCountriesIn;
         }
     }
 }

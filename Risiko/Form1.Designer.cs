@@ -38,6 +38,7 @@
             this.ansichtToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.autoLanderkennungAktivierenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlMap = new System.Windows.Forms.Panel();
+            this.btnEndTurn = new System.Windows.Forms.Button();
             this.menuSMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -124,6 +125,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlMap.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(242)))), ((int)(((byte)(198)))));
+            this.pnlMap.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.pnlMap.Location = new System.Drawing.Point(12, 24);
             this.pnlMap.Name = "pnlMap";
             this.pnlMap.Size = new System.Drawing.Size(872, 540);
@@ -131,11 +133,22 @@
             this.pnlMap.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pnlMap_MouseMove);
             this.pnlMap.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pnlMap_MouseUp);
             // 
+            // btnEndTurn
+            // 
+            this.btnEndTurn.Location = new System.Drawing.Point(778, 570);
+            this.btnEndTurn.Name = "btnEndTurn";
+            this.btnEndTurn.Size = new System.Drawing.Size(106, 23);
+            this.btnEndTurn.TabIndex = 6;
+            this.btnEndTurn.Text = "Zug beenden";
+            this.btnEndTurn.UseVisualStyleBackColor = true;
+            this.btnEndTurn.Click += new System.EventHandler(this.btnEndTurn_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(896, 605);
+            this.Controls.Add(this.btnEndTurn);
             this.Controls.Add(this.pnlMap);
             this.Controls.Add(this.lblMessage);
             this.Controls.Add(this.btnDrawMap);
@@ -168,6 +181,7 @@
         private System.Windows.Forms.Panel pnlMap;
         private System.Windows.Forms.ToolStripMenuItem autoLanderkennungAktivierenToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem neuesSpieToolStripMenuItem;
+        private System.Windows.Forms.Button btnEndTurn;
     }
 }
 

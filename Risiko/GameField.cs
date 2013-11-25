@@ -56,7 +56,7 @@ namespace Risiko
         /// <summary>
         /// Index des Spielers deraktuell am Zug ist, bei 0 beginnend
         /// </summary>
-        private int TurnOfPlayer;
+        private int TurnOfPlayer = -1;
 
 
         /// <summary>
