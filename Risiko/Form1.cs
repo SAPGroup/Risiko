@@ -43,6 +43,8 @@ namespace Risiko
         private bool DrawFlag = false;
         // temporärer Index des zuletzt angklickten Landes
         private int tempIndex = -1;
+        // 2ter temporärer Index, sonst wird, wenn man über das gleiche Land fährt, es immer wieder gezeichnet
+        private int tempOldIndex = -1;
 
         
         public Form1()
@@ -390,19 +392,24 @@ namespace Risiko
                 Point clickedPosition = new Point(e.X, e.Y);
                 int temp = checkClickOnPolygon(clickedPosition);
 
+                if(temp != -1)
+                    tempOldIndex = temp;
 
-                if (temp == -1 & tempIndex != -1)
+                if (temp == -1 & tempIndex != -1 & tempOldIndex != tempIndex)
                 {
                     //kein Treffer
 
                     // auskommentiert da Abfrage zu oft (auch in einem Land) auftritt
                     // wieso liefert CheckClickOnPolygon direkt in einem Land -1? 
-
-                    //Game.countries[tempIndex].colorOfCountry = tempSelCountry;
                     
-                    //DrawCountry(tempIndex);
-                    //tempIndex = -1;
-                    //DrawFlag = true;
+                    // danke tempOldIndex doch drin, somit ok
+                    // sollte jedoch eigentlich überflüßig sein
+
+                    Game.countries[tempIndex].colorOfCountry = tempSelCountry;
+
+                    DrawCountry(tempIndex);
+                    tempIndex = -1;
+                    DrawFlag = true;
                 }                  
                 else if (temp != -1 & temp != tempIndex)
                 {
@@ -430,46 +437,24 @@ namespace Risiko
            
         }
 
+        /// <summary>
+        /// Neues Spiel Button im Menüband
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void neuesSpieToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Player[] tempPlayers = new Player[5];
             Game.SetPlayersOnly(0,2, tempPlayers);
         }
-        
-        // normales Zeichnen auf pnl??? 
-        private void DrawCountry(int tempIndex, int tempIndex2)
-        {
-            Graphics temp;
-            temp = pnlMap.CreateGraphics();
+       
 
-            Point[] tempPoints = Game.GiveCountryToDraw(tempIndex).corners;
-            Point[] realPoints = new Point[Game.GiveCountryToDraw(tempIndex).corners.Length];
-
-            for (int j = 0; j < realPoints.Length; ++j)
-            {
-                realPoints[j].X = (tempPoints[j].X * Factor);
-                realPoints[j].Y = (tempPoints[j].Y * Factor);
-            }
-
-            SolidBrush tempObjectbrush = new SolidBrush(Game.GiveCountryToDraw(tempIndex).colorOfCountry);
-            temp.FillPolygon(tempObjectbrush, realPoints);
-            temp.DrawPolygon(stift, realPoints);
-
-            Point[] tempPoints2 = Game.GiveCountryToDraw(tempIndex2).corners;
-            Point[] realPoints2 = new Point[Game.GiveCountryToDraw(tempIndex2).corners.Length];
-
-            for (int j = 0; j < realPoints.Length; ++j)
-            {
-                realPoints2[j].X = (tempPoints2[j].X * Factor);
-                realPoints2[j].Y = (tempPoints2[j].Y * Factor);
-            }
-
-            tempObjectbrush = new SolidBrush(Game.GiveCountryToDraw(tempIndex2).colorOfCountry);
-            temp.FillPolygon(tempObjectbrush, realPoints);
-            temp.DrawPolygon(stift, realPoints);
-        }
-
-        // normales Zeichnen auf pnl??? 
+        /// <summary>
+        /// zeichnet auf pnl mithilfe der Standard GDI+
+        /// allerdings nur ein Land, womit zu viel zeichnen vermieden wird
+        /// -> kein Flackern
+        /// </summary>
+        /// <param name="IndexIn"></param>
         private void DrawCountry(int IndexIn)
         {
             Graphics temp;
