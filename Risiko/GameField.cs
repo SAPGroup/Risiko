@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Drawing;
+using System.Windows.Forms;
 
 
 namespace Risiko
@@ -57,14 +58,6 @@ namespace Risiko
         /// Index des Spielers deraktuell am Zug ist, bei 0 beginnend
         /// </summary>
         private int TurnOfPlayer = -1;
-
-
-        /// <summary>
-        /// Legt fest wie viel Werte ein Land ausmachen bevor die Punkte
-        /// angegeben werden
-        /// </summary>
-        private const int NotPointValuesOfCountriesSource = 2;
-
 
 
         //
@@ -250,8 +243,10 @@ namespace Risiko
 
             // Darin wird jeweils die Anzahl der Punkte gespeichert, um 0|0 Punkte zu vermeiden
             int[] tempCounterPointsArray = new int[numberOfCountries];
-            GetNumberPointsArrayDB(ref tempCounterPointsArray);
+            int[] tempCounterNeighboursArray = new int[numberOfCountries];
 
+            GetNumberPointsArrayDB(ref tempCounterPointsArray);
+            GetNumberOfNeighboursArrayDB(ref tempCounterNeighboursArray);
             
 
             cmd.Connection = con;
@@ -305,13 +300,49 @@ namespace Risiko
                 // temp String, falls Fehlermeldung
                 string temp = ex.Message;
             }
+
+
+            // Laden der NachbarLänder (aus anderer Table)
+            cmd.CommandText = "select * from Neighbours;";
+            try
+            {
+                //öffnen
+                con.Open();
+                reader = cmd.ExecuteReader();
+
+                // Fortlaufender Zähler, zählt welche Country aktuell erzeugt werden muss
+                int counter = 0;
+
+                while (reader.Read())
+                {
+                    string[] tempNeighbouringCountriesNames = new string[tempCounterNeighboursArray[counter]];
+                    for (int i = 1; (i-1) < tempCounterNeighboursArray[counter]; ++i)
+                    {
+                        int tempIDCountry = Convert.ToInt32(reader["Neighbour" + i]);
+                        tempNeighbouringCountriesNames[i - 1] = Countries[tempIDCountry-1].name;
+                    }
+
+                    // Konstruktor der Country
+                    Countries[counter].neighbouringCountries = tempNeighbouringCountriesNames;
+                    counter++;
+                }
+                reader.Close();
+                con.Close();
+            }
+            catch (Exception ex)
+            {
+                // temp String, falls Fehlermeldung
+                string temp = ex.Message;
+                MessageBox.Show(temp);
+            }
+
         }
 
         /// <summary>
         /// Liest die Anzahl der Länder, die Höhe und Breite der Karte
         /// aus der Source-DB aus
         /// </summary>
-        public void GetNumberOfCountriesDB()
+        private void GetNumberOfCountriesDB()
         {
             cmd.Connection = con;
             cmd.CommandText = "select * from Weltkarte;";
@@ -349,11 +380,48 @@ namespace Risiko
         }
 
         /// <summary>
+        /// Speichert die Anzahl der Nachbarländer in ParameterArray
+        /// </summary>
+        /// <param name="tempCounterOfNeighbours"></param>
+        private void GetNumberOfNeighboursArrayDB(ref int[] tempCounterOfNeighbours)
+        {
+            cmd.Connection = con;
+            cmd.CommandText = "select * from Neighbours;";
+            try
+            {
+                //öffnen
+                con.Open();
+                reader = cmd.ExecuteReader();
+
+                int Counter = 0;
+
+                while (reader.Read())
+                {
+                    int tempNeighbourCounter = 0;
+                    for (int i = 1; i < 11; ++i)
+                    {
+                        if (reader["Neighbour" + i] != null & Convert.ToInt32(reader["Neighbour" + i]) >= 1)
+                            tempNeighbourCounter++;
+                    }
+                    tempCounterOfNeighbours[Counter] = tempNeighbourCounter;
+                    ++Counter;
+                }
+
+                reader.Close();
+                con.Close();
+            }
+            catch (Exception ex)
+            {
+                string temp = ex.Message;
+            }
+        }
+
+        /// <summary>
         /// Speicher in dem Eingabe-Array die Anzahl der Punkte des
         /// jeweiligen Index, Country[x] -> temmCounterPointsArray[x] 
         /// </summary>
         /// <param name="tempCounterPointsArray">zuvor leerer Array</param>
-        public void GetNumberPointsArrayDB(ref int[] tempCounterPointsArray)
+        private void GetNumberPointsArrayDB(ref int[] tempCounterPointsArray)
         {
             cmd.Connection = con;
             cmd.CommandText = "select * from Weltkarte;";

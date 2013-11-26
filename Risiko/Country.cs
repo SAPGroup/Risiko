@@ -36,9 +36,9 @@ namespace Risiko
         private int UnitsStationed;
 
         /// <summary>
-        /// Array der in dem die Nachbarländer gespeichert sind
+        /// Array in dem die Nachbarländer gespeichert sind
         /// </summary>
-        private string[] NeighboringCountries;
+        private string[] NeighbouringCountries;
 
 
 
@@ -64,6 +64,21 @@ namespace Risiko
             Name = NameIn;
             ColorOfCountry = ColorIn;
         }
+
+        /// <summary>
+        /// veränderterKonstruktor
+        /// </summary>
+        /// <param name="NameIn"></param>
+        /// <param name="CornersIn"></param>
+        public Country(string NameIn, Point[] CornersIn, Color ColorIn, string[]  NeighbouringCountriesIn)
+        {
+            Corners = CornersIn;
+            Name = NameIn;
+            ColorOfCountry = ColorIn;
+            NeighbouringCountries = NeighbouringCountriesIn;
+        }
+
+
 
         //
         //Set für alle Variablen
@@ -134,6 +149,15 @@ namespace Risiko
                 if (value >= 0)
                     UnitsStationed = value;
             }
+        }
+
+        /// <summary>
+        /// Set und Get der benachbarten Länder
+        /// </summary>
+        public string[] neighbouringCountries
+        {
+            get { return NeighbouringCountries; }
+            set { NeighbouringCountries = value; }
         }
     }
 }
