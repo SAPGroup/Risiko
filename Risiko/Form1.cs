@@ -581,7 +581,10 @@ namespace Risiko
         }
         
 
-
+        /// <summary>
+        /// Zeichnet Nachbarländer, nur temporär
+        /// um zu überprüfen ob die Nachbarläner richtig ausgelesen wurden
+        /// </summary>
         public void DrawNeighbours()
         {
             Graphics temp = pnlMap.CreateGraphics();
