@@ -467,7 +467,7 @@ namespace Risiko
         /// </summary>
         /// <param name="tempColor"></param>
         /// <returns></returns>
-        private Color GetColorFromString(string tempColor)
+        public Color GetColorFromString(string tempColor)
         {
             tempColor = tempColor.Trim('\t', ' ','\'');
             if (tempColor == "blue")

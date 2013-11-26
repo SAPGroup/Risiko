@@ -420,7 +420,6 @@ namespace Risiko
             return -1;
         }
 
-
         /// <summary>
         /// Checkt ob Punkt P ind Polygon Polygon
         /// true = innherhalb des Polygons
@@ -463,8 +462,19 @@ namespace Risiko
             return Inside;
         }
 
+        /// <summary>
+        /// Button "Zug Beenden"
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnEndTurn_Click(object sender, EventArgs e)
         {
+            // Für Testzwecke
+            for (int i = 0; i < Game.countries.Length; ++i )
+                DrawMiddleCircle(i);
+
+
+            // später wahrscheinlich benötigt
             Game.turnOfPlayer++;
             if (Game.turnOfPlayer >= Game.numberOfPlayers)
                 Game.turnOfPlayer = 0;
@@ -472,99 +482,71 @@ namespace Risiko
 
 
 
-        // veraltet
+        /// <summary>
+        /// Liefert die echten Bildpunkte des Landes zurück, nicht die des "kleinen"
+        /// Koordinatenfeldes, die in Corners gespeichert ist
+        /// </summary>
+        /// <param name="Corners"></param>
+        /// <returns></returns>
+        public Point[] GetRealPointsFromCorners(Point[] Corners)
+        {
+            Point[] realPoints = new Point[Corners.Length];
 
-        //// NEU Jonas
-        ///// <summary>
-        ///// Prüft ob ein in der Graphics z gezeichnetes Polygon mit einem Mausklick getroffen wurde
-        ///// </summary>
-        //public int checkClickOnPolygon(Point clickedPosition)
-        //{
-        //    // Um Fehler bei aktivierter Autoerkennung und noch nicht gezeichneter Karte zu vermiden
-        //    if (DrawnMap == true)
-        //    {
-        //        //Farbe von geklicktem Pixel, sowie von der Randfarbe des Landes werden gesetzt
-        //        Color colorOfClickedPixel = z_asBitmap.GetPixel(clickedPosition.X, clickedPosition.Y);
-        //        Color colorOfBorder = Color.Black;
+            for (int i = 0; i < realPoints.Length; ++i)
+            {
+                realPoints[i].X = (Corners[i].X * Factor);
+                realPoints[i].Y = (Corners[i].Y * Factor);
+            }
+            return realPoints;
+        }
 
-        //        //Länder, die überprüft werden sollen, werden in Array checkCountries[] geladen
-        //        Country[] checkCountries = Game.countries;
+        /// <summary>
+        /// Kreis in der Mitte eine Landes (CountryIn)
+        /// wird gezeichnet, mit der Anzahl der Einheiten
+        /// </summary>
+        /// <param name="Country"></param>
+        public void DrawMiddleCircle(int Country)
+        {
+            int NumberOfMen = 0;                                // Game.countries[Country].unitsStationed; fällt momentan weg
+            Point[] realPoints = GetRealPointsFromCorners(Game.countries[Country].corners);
+            Point Middle = GetMiddleOfPolygon(realPoints);
+            
+            //graphics initialisieren
+            Graphics temp = pnlMap.CreateGraphics();
 
+            //MittelKreis in Schwarz zeichnen
+            SolidBrush tempObjectbrush = new SolidBrush(Color.Black);
+            temp.FillEllipse(tempObjectbrush,Middle.X-10, Middle.Y-10, 20,20);
 
-        //        //Rückgabewert = clickedCountryIndex
-        //        //Rückgabewert = -1  --> kein Treffer
-        //        //Rückgabewert >= 0   --> Treffer auf Countries[cklickedCountryIndex]
-        //        int clickedCountryIndex = -1;
-        //        int xMin = 0, xMax = 0, yMin = 0, yMax = 0;
+            //zum schreiben
+            Font f = new Font("Arial", 10);
+            tempObjectbrush = new SolidBrush(Color.White);
+            temp.DrawString(Convert.ToString(NumberOfMen), f, tempObjectbrush, Middle.X-5, Middle.Y-5);
+        }
 
-        //        CheckFactor();
+        /// <summary>
+        /// Liefert Mittel-Punkt eines Polygons zurück
+        /// In Form1, da in Game.Countries.Corners nur die Eckpunkte des "kleinen",
+        /// internen Polygons gespeichert sind
+        /// </summary>
+        /// <param name="realPoints"></param>
+        /// <returns></returns>
+        public Point GetMiddleOfPolygon(Point[] Points)
+        {
+            double Area = 0.0;
+            double MiddleX = 0.0;
+            double MiddleY = 0.0;
 
+            for (int i = 0, j = Points.Length - 1; i < Points.Length; j = i++)
+            {
+                float temp = Points[i].X * Points[j].Y - Points[j].X * Points[i].Y;
+                Area += temp;
+                MiddleX += (Points[i].X + Points[j].X) * temp;
+                MiddleY += (Points[i].Y + Points[j].Y) * temp;
+            }
 
-        //        //For Schleife, die für jedes Polygon(=Land) einmal durchlaufen wird --> jedes mal wird überprüft ob der Click ein Land getroffen hat
-        //        for (int i = 0;i < checkCountries.Length;i++)
-        //        {
-
-        //            //Setzt die Minimalen und Maximalen Koordinatenpunkte auf die Werte des ersten Eckpunkts des Polygons
-        //            xMin = checkCountries[i].corners[0].X*Factor;
-        //            xMax = checkCountries[i].corners[0].X*Factor;
-        //            yMin = checkCountries[i].corners[0].Y*Factor;
-        //            yMax = checkCountries[i].corners[0].Y*Factor;
-
-        //            //Die Eckpunkte des Vierecks,das um das Polygon gelegt wird, werden bestimmt und in xMin, xMax, yMin, yMax geschrieben
-        //            for (int j = 1;j < checkCountries[i].corners.Length;j++)
-        //            {
-        //                if (checkCountries[i].corners[j].X*Factor > xMax)
-        //                {
-        //                    xMax = checkCountries[i].corners[j].X*Factor;
-        //                }
-        //                if (checkCountries[i].corners[j].X*Factor < xMin)
-        //                {
-        //                    xMin = checkCountries[i].corners[j].X*Factor;
-        //                }
-        //                if (checkCountries[i].corners[j].Y*Factor > yMax)
-        //                {
-        //                    yMax = checkCountries[i].corners[j].Y*Factor;
-        //                }
-        //                if (checkCountries[i].corners[j].Y*Factor < yMin)
-        //                {
-        //                    yMin = checkCountries[i].corners[j].Y*Factor;
-        //                }
-        //            }
-
-
-
-        //            //Treffer auf ein Land wenn
-        //            // -der Mausklicks innerhalb der äußersten Eckpunkte liegt und
-        //            //  die Farbe des getroffenen Pixels
-        //            //      - entweder der Landesfarbe 
-        //            //      - oder der Farbe des Randes von dem jeweiligen Land entspricht
-        //            if (((clickedPosition.X <= xMax && clickedPosition.X >= xMin) &&
-        //                 (clickedPosition.Y <= yMax && clickedPosition.Y >= yMin))
-        //                &&
-        //                (((colorOfClickedPixel.A == checkCountries[i].colorOfCountry.A) &&
-        //                  (colorOfClickedPixel.R == checkCountries[i].colorOfCountry.R) &&
-        //                  (colorOfClickedPixel.B == checkCountries[i].colorOfCountry.B) &&
-        //                  (colorOfClickedPixel.G == checkCountries[i].colorOfCountry.G))
-        //                //||
-        //                //(((colorOfClickedPixel.A == colorOfBorder.A) &&
-        //                //  (colorOfClickedPixel.R == colorOfBorder.R) &&
-        //                //  (colorOfClickedPixel.B == colorOfBorder.B) &&
-        //                //  (colorOfClickedPixel.G == colorOfBorder.G)))
-        //                )
-        //                )
-        //            {
-        //                //Bei einem Treffer wird der Rückgabewert auf den getroffenen Index gesetzt
-        //                clickedCountryIndex = i;
-
-        //            }
-
-        //        }
-
-        //        return clickedCountryIndex;
-        //    }
-        //    else
-        //        // bei Fehler
-        //        return -1;
-        //}
+            Area *= 3;
+            return new Point((int)(MiddleX / Area), (int)(MiddleY / Area));
+        }
     }
 }
