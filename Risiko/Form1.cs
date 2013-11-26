@@ -472,7 +472,7 @@ namespace Risiko
             // Für Testzwecke
             for (int i = 0; i < Game.countries.Length; ++i )
                 DrawMiddleCircle(i);
-
+            DrawNeighbours();
 
             // später wahrscheinlich benötigt
             Game.turnOfPlayer++;
@@ -547,6 +547,60 @@ namespace Risiko
 
             Area *= 3;
             return new Point((int)(MiddleX / Area), (int)(MiddleY / Area));
+        }
+
+        /// <summary>
+        /// Liefert Mittel-Punkt eines Polygons zurück
+        /// In Form1, da in Game.Countries.Corners nur die Eckpunkte des "kleinen",
+        /// internen Polygons gespeichert sind
+        /// 
+        /// Rechnet die Punkte aus den Ländern automatisch mit Faktor um
+        /// somit kein umrechnen in aufrufender Methode mehr nötig
+        /// </summary>
+        /// <param name="realPoints"></param>
+        /// <returns></returns>
+        public Point GetRealMiddleOfPolygon(Point[] Points)
+        {
+            double Area = 0.0;
+            double MiddleX = 0.0;
+            double MiddleY = 0.0;
+
+            Point[] realPoints = GetRealPointsFromCorners(Points);
+
+
+            for (int i = 0, j = realPoints.Length - 1; i < realPoints.Length; j = i++)
+            {
+                float temp = realPoints[i].X * realPoints[j].Y - realPoints[j].X * realPoints[i].Y;
+                Area += temp;
+                MiddleX += (realPoints[i].X + realPoints[j].X) * temp;
+                MiddleY += (realPoints[i].Y + realPoints[j].Y) * temp;
+            }
+
+            Area *= 3;
+            return new Point((int)(MiddleX / Area), (int)(MiddleY / Area));
+        }
+        
+
+
+        public void DrawNeighbours()
+        {
+            Graphics temp = pnlMap.CreateGraphics();
+            
+            for (int i = 0;i < Game.numberOfCountries;++i)
+            {
+                string[] Neighbours = Game.countries[i].neighbouringCountries;
+                for (int j = 0;j < Neighbours.Length;++j)
+                {
+                    string tempName = Neighbours[j];
+                    int tempK = 0;
+                    for (int k = 0; k < Game.numberOfCountries; ++k)
+                        if (Game.countries[k].name == tempName)
+                            tempK = k;
+                    temp.DrawLine(stift, GetRealMiddleOfPolygon(Game.countries[tempK].corners).X, 
+                        GetRealMiddleOfPolygon(Game.countries[tempK].corners).Y, GetRealMiddleOfPolygon(Game.countries[i].corners).X, 
+                        GetRealMiddleOfPolygon(Game.countries[i].corners).Y);
+                }        
+            }
         }
     }
 }
