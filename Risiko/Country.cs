@@ -26,7 +26,7 @@ namespace Risiko
         private Color ColorOfCountry;
 
         /// <summary>
-        /// Besitzender Spieler
+        /// Besitzender Spieler, -1 kein spieler
         /// </summary>
         private int Owner;
 
@@ -40,6 +40,11 @@ namespace Risiko
         /// </summary>
         private string[] NeighbouringCountries;
 
+        /// <summary>
+        /// Speichert den Kontinent, zu dem das Land gehört
+        /// 0-x , Kontinente, -1 unbelegt (noch nicht initialisiert)
+        /// </summary>
+        private int Continent;
 
 
         //
@@ -51,6 +56,8 @@ namespace Risiko
         {
             Name = "";
             ColorOfCountry = Color.Black;
+            UnitsStationed = 0;
+            Owner = -1;
         }
 
         /// <summary>
@@ -70,14 +77,27 @@ namespace Risiko
         /// </summary>
         /// <param name="NameIn"></param>
         /// <param name="CornersIn"></param>
-        public Country(string NameIn, Point[] CornersIn, Color ColorIn, string[]  NeighbouringCountriesIn)
+        public Country(string NameIn, Point[] CornersIn, Color ColorIn, string[]  NeighbouringCountriesIn, int ContinentIn)
+        {
+            Corners = CornersIn;
+            Name = NameIn;
+            ColorOfCountry = ColorIn;
+            NeighbouringCountries = NeighbouringCountriesIn;
+            Continent = ContinentIn;
+        }
+
+        /// <summary>
+        /// veränderterKonstruktor
+        /// </summary>
+        /// <param name="NameIn"></param>
+        /// <param name="CornersIn"></param>
+        public Country(string NameIn, Point[] CornersIn, Color ColorIn, string[] NeighbouringCountriesIn)
         {
             Corners = CornersIn;
             Name = NameIn;
             ColorOfCountry = ColorIn;
             NeighbouringCountries = NeighbouringCountriesIn;
         }
-
 
 
         //
@@ -158,6 +178,15 @@ namespace Risiko
         {
             get { return NeighbouringCountries; }
             set { NeighbouringCountries = value; }
+        }
+
+        /// <summary>
+        /// Set- und Get- des Kontinent, zu dem das Land gehört
+        /// </summary>
+        public int continent
+        {
+            get { return Continent; }
+            set { Continent = value; }
         }
     }
 }

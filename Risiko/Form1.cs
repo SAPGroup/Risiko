@@ -40,7 +40,7 @@ namespace Risiko
 
         //Bei Klick wichtig!
         //Flag die festlegt ob Karte neu gezeichnet werden soll, obwohl keine Änderung im Factor vorhanden ist
-        //noch benötigt?? 
+        //noch benötigt?? - ja -> DrawMapWoLoad
         private bool DrawFlag = false;
         // temporärer Index des zuletzt angklickten Landes
         private int tempIndex = -1;
@@ -371,13 +371,20 @@ namespace Risiko
         /// <param name="e"></param>
         private void neuesSpieToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Player[] tempPlayers = new Player[5];
-            // Spiel wird gestartet
-            Game.SetPlayersOnly(0 ,tempPlayers.Length, tempPlayers);
-            for (int i = 0;i < tempPlayers.Length;++i)
-            {
-                // einzelne Spielerwerte setzten
-            }
+            // Gibt der Form2 "alles" als Parameter mit
+            // für veränderungen usw.
+            Form2 newGame = new Form2(this);
+            // Lädt Form2
+            newGame.ShowDialog();
+
+            //// old
+            //Player[] tempPlayers = new Player[5];
+            //// Spiel wird gestartet
+            //Game.SetPlayersOnly(0 ,tempPlayers.Length, tempPlayers);
+            //for (int i = 0;i < tempPlayers.Length;++i)
+            //{
+            //    // einzelne Spielerwerte setzten
+            //}
         }
       
 
@@ -469,15 +476,18 @@ namespace Risiko
         /// <param name="e"></param>
         private void btnEndTurn_Click(object sender, EventArgs e)
         {
-            // Für Testzwecke
-            for (int i = 0; i < Game.countries.Length; ++i )
-                DrawMiddleCircle(i);
-            DrawNeighbours();
+            if (Game.countries != null)
+            {
+                // Für Testzwecke
+                for (int i = 0; i < Game.countries.Length; ++i)
+                    DrawMiddleCircle(i);
+                DrawNeighbours();
 
-            // später wahrscheinlich benötigt
-            Game.turnOfPlayer++;
-            if (Game.turnOfPlayer >= Game.numberOfPlayers)
-                Game.turnOfPlayer = 0;
+                // später wahrscheinlich benötigt
+                Game.turnOfPlayer++;
+                if (Game.turnOfPlayer >= Game.numberOfPlayers)
+                    Game.turnOfPlayer = 0;
+            }     
         }
 
 
@@ -582,7 +592,8 @@ namespace Risiko
         
 
         /// <summary>
-        /// Zeichnet Nachbarländer, nur temporär
+        /// TEMP:
+        /// Zeichnet Nachbarländer
         /// um zu überprüfen ob die Nachbarläner richtig ausgelesen wurden
         /// </summary>
         public void DrawNeighbours()

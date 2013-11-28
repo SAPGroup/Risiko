@@ -63,9 +63,19 @@ namespace Risiko.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] Risiko_Weltkarte {
+        internal static byte[] Risiko_Weltkarte_old_unused {
             get {
-                object obj = ResourceManager.GetObject("Risiko_Weltkarte", resourceCulture);
+                object obj = ResourceManager.GetObject("Risiko_Weltkarte_old_unused", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Risiko_Weltkarte1 {
+            get {
+                object obj = ResourceManager.GetObject("Risiko_Weltkarte1", resourceCulture);
                 return ((byte[])(obj));
             }
         }
