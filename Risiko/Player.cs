@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Risiko
 {
-    class Player
+    public class Player
     {
         /// <summary>
         /// Array aller besetzten Länder
@@ -28,6 +29,16 @@ namespace Risiko
         /// wird berechnet, nicht gesetzt
         /// </summary>
         private int UnitsPT;
+
+        /// <summary>
+        /// Legt fest ob Computergegner oder Eigener Spieler
+        /// </summary>
+        private bool AIPlayer;
+
+        /// <summary>
+        /// Farbe des Spielers
+        /// </summary>
+        private Color PlayerColor; 
 
 
         // Konstruktoren
@@ -51,6 +62,24 @@ namespace Risiko
             OwnedCountries = OwnedCountriesIn;
         }
 
+        /// <summary>
+        /// Konstruktor mit Name und besetzten Ländern und PlayerTyp
+        /// </summary>
+        /// <param name="NameIn"></param>
+        /// <param name="OwnedCountriesIn"></param>
+        public Player(string NameIn, string[] OwnedCountriesIn, bool IsAIPlayer)
+        {
+            Name = NameIn;
+            OwnedCountries = OwnedCountriesIn;
+            AIPlayer = IsAIPlayer;
+        }
+
+        public Player(string NameIn, bool IsAIPlayer, Color PlayerColorIn)
+        {
+            Name = NameIn;
+            AIPlayer = IsAIPlayer;
+            PlayerColor = PlayerColorIn;
+        }
 
         // Set- und Get- Methoden
         /// <summary>

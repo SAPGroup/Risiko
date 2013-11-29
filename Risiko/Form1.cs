@@ -26,7 +26,7 @@ namespace Risiko
         private int Factor = 0;
 
         //GameField
-        GameField Game = new GameField();
+        private GameField Game = new GameField();
         
         //Landerkennung
         private bool autoLanderkennung = true;
@@ -44,8 +44,6 @@ namespace Risiko
         private bool DrawFlag = false;
         // temporärer Index des zuletzt angklickten Landes
         private int tempIndex = -1;
-        // 2ter temporärer Index, sonst wird, wenn man über das gleiche Land fährt, es immer wieder gezeichnet
-        private int tempOldIndex = -1;
 
         
         public Form1()
@@ -71,6 +69,18 @@ namespace Risiko
         }
 
 
+        /// <summary>
+        /// Set- und Get- von Game, für Form2
+        /// </summary>
+        /// <returns></returns>
+        public GameField GetGame()
+        {
+            return Game;
+        }
+        public void SetGame(GameField GameIn)
+        {
+            Game = GameIn;
+        }
 
 
         /// <summary>

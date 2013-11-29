@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace Risiko
 {
-    class GameField
+    public class GameField
     {
 
         /// <summary>
@@ -387,7 +387,6 @@ namespace Risiko
             }
 
         }
-
 
         /// <summary>
         /// Liest die Anzahl der Länder aus der DB

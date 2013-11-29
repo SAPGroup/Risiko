@@ -87,14 +87,14 @@
             // kartenDateiToolStripMenuItem
             // 
             this.kartenDateiToolStripMenuItem.Name = "kartenDateiToolStripMenuItem";
-            this.kartenDateiToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.kartenDateiToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.kartenDateiToolStripMenuItem.Text = "Datei öffnen...";
             this.kartenDateiToolStripMenuItem.Click += new System.EventHandler(this.kartenDateiToolStripMenuItem_Click);
             // 
             // neuesSpieToolStripMenuItem
             // 
             this.neuesSpieToolStripMenuItem.Name = "neuesSpieToolStripMenuItem";
-            this.neuesSpieToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.neuesSpieToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.neuesSpieToolStripMenuItem.Text = "Neues Spiel";
             this.neuesSpieToolStripMenuItem.Click += new System.EventHandler(this.neuesSpieToolStripMenuItem_Click);
             // 

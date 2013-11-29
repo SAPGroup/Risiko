@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Risiko
 {
-    class Country
+    public class Country
     {
 
         /// <summary>
