@@ -18,7 +18,8 @@ namespace Risiko
         // Wird nachher an Form1 zurückgegeben, mit geänderten Player-Werten
         GameField tempGame;
         // Array der die alten Werte speichert, falls änderung
-        private bool[] KI;
+        // Bisherige Fehler bei Bennung der KI (Nummer) -> vlt einfach Farbe zum Namen hinzufügen
+        // TODO: private bool[] KI;
 
         public Form2()
         {
@@ -53,11 +54,15 @@ namespace Risiko
                 string tempName = Convert.ToString(dGVNewGame.Rows[i].Cells[0].Value);
                 Color tempColor = GetColorFromString(Convert.ToString(dGVNewGame.Rows[i].Cells[1].Value));
                 bool tempAI = Convert.ToBoolean(dGVNewGame.Rows[i].Cells[2].Value);
+                // Werte der einzelnen Spieler werden gespeichert
                 PlayersStart[i] = new Player(tempName, tempAI, tempColor);
+                PlayersStart[i].unitsPT = 20;
             }
+            // Werte werden in GameField übernommen
             tempGame.players = PlayersStart;
             tempGame.turnOfPlayer = 0;
-            tempGame.numberOfPlayers = PlayersStart.Length;
+            tempGame.gameState = 0;
+            // GameField in Form1 wird mit lokalem verändertem GameField überschrieben
             fh.SetGame(tempGame);
             Close();
         }

@@ -46,12 +46,6 @@ namespace Risiko
         /// </summary>
         private Country[] Countries;
 
-
-        /// <summary>
-        /// Anzahl der Spieler
-        /// </summary>
-        private int NumberOfPlayers;
-
         /// <summary>
         /// alle Spieler
         /// </summary>
@@ -61,6 +55,13 @@ namespace Risiko
         /// Index des Spielers deraktuell am Zug ist, bei 0 beginnend
         /// </summary>
         private int TurnOfPlayer = -1;
+
+        /// <summary>
+        /// Aktueller Statur, 0 Setzen der Spieler
+        /// wenn alles gesetzt wurde, 1 für das Setzten der neuen Männer,
+        /// 2 angreifen, 3 ziehen
+        /// </summary>
+        private int GameState = -1;
 
 
         //
@@ -94,19 +95,6 @@ namespace Risiko
         {
             get { return Width; }
             set { Width = value; }
-        }
-
-        /// <summary>
-        /// Set- und Get- Methoden für die Anzahl der Spieler
-        /// </summary>
-        public int numberOfPlayers
-        {
-            get { return NumberOfCountries; }
-            set
-            {
-                if (value >= 0)
-                    NumberOfCountries = value;
-            }
         }
 
         /// <summary>
@@ -149,6 +137,21 @@ namespace Risiko
             set { Players = value; }
         }
 
+        /// <summary>
+        /// Set und Get des SpielStatuses, Begrenzung da andere
+        /// Werte keinen Sinn ergeben
+        /// </summary>
+        public int gameState
+        {
+            get { return GameState; }
+            set
+            {
+                if (value >= 0 & value <= 3)
+                    GameState = value;
+            }
+        }
+
+
 
         //
         // Konstruktoren
@@ -160,7 +163,6 @@ namespace Risiko
             NumberOfCountries = 0;
             Height = 0;
             Width = 0;
-            NumberOfPlayers = 0;
             TurnOfPlayer = 0;
         }
 
@@ -170,13 +172,12 @@ namespace Risiko
         /// <param name="CountriesIn"></param>
         /// <param name="LengthIn"></param>
         /// <param name="WidthIn"></param>
-        public GameField(int CountriesIn, int LengthIn, int WidthIn, int TurnOfPlayerIn, int NumberOfPlayersIn)
+        public GameField(int CountriesIn, int LengthIn, int WidthIn, int TurnOfPlayerIn)
         {
             NumberOfCountries = CountriesIn;
             Height = LengthIn;
             Width = WidthIn;
             TurnOfPlayer = TurnOfPlayerIn;
-            NumberOfPlayers = NumberOfPlayersIn;
         }
 
         //
@@ -203,13 +204,12 @@ namespace Risiko
         /// <param name="WidthIn"></param>
         /// <param name="TurnOfPlayerIn"></param>
         /// <param name="NumberOfPlayersIn"></param>
-        public void SetAllValues(int CountriesIn, int LengthIn, int WidthIn, int TurnOfPlayerIn, int NumberOfPlayersIn)
+        public void SetAllValues(int CountriesIn, int LengthIn, int WidthIn, int TurnOfPlayerIn)
         {
             NumberOfCountries = CountriesIn;
             Height = LengthIn;
             Width = WidthIn;
             TurnOfPlayer = TurnOfPlayerIn;
-            NumberOfPlayers = NumberOfPlayersIn;
         }
 
         /// <summary>
@@ -217,10 +217,9 @@ namespace Risiko
         /// </summary>
         /// <param name="TurnOfPlayerIn"></param>
         /// <param name="NumberOfPlayersIn"></param>
-        public void SetPlayersOnly(int TurnOfPlayerIn, int NumberOfPlayersIn, Player[] PlayersIn)
+        public void SetPlayersOnly(int TurnOfPlayerIn, Player[] PlayersIn)
         {
             TurnOfPlayer = TurnOfPlayerIn;
-            NumberOfPlayers = NumberOfPlayersIn;
             Players = PlayersIn;
         }
 
@@ -266,6 +265,55 @@ namespace Risiko
                 return Color.Orange;
             else 
                 return Color.White;
+        }
+
+
+        public void SpreadCountriesToPlayers()
+        {
+            Random rnd = new Random();
+            // Speicher temporär die Anzahl der Länder die der Spieler
+            // bereits besitzt
+            int[] CounterOfCountries = new int[players.Length];
+
+            // Die Anzahl der Länder die jeder Spieler mindestens bekommt
+            int CountriesEachPlayer = countries.Length/players.Length;
+
+            // Anzahl der "mindest" länder setzen
+            for (int i = 0; i < players.Length; ++i)
+                CounterOfCountries[i] = CountriesEachPlayer;
+
+            // Die Anzahl der Länder die "zu viel" sind, die also
+            // Spielern zusätzlich zugeteilt werden
+            // TODO: "Echte" Spieler vlt bevorzugen (nicht KI)
+            int CountriesLeft = countries.Length - (CountriesEachPlayer*players.Length);
+
+            // Zufallsvariable
+            int tempRnd;
+
+            // Gibt zufällig manchen Spielern mehr Länder (die die zu viel waren)
+            while (CountriesLeft > 0)
+            {
+                tempRnd = (int) rnd.NextDouble() * players.Length;
+                if (CounterOfCountries[tempRnd] == CountriesEachPlayer)
+                {
+                    CounterOfCountries[tempRnd]++;
+                    CountriesLeft--;
+                }
+            }
+
+            // Gibt den Spielern die Länder
+            for (int i = 0;i < countries.Length;i++)
+            {
+                tempRnd = (int) (rnd.NextDouble() * players.Length);
+                if (CounterOfCountries[tempRnd] > 0)
+                {
+                    countries[i].owner = tempRnd;
+                    CounterOfCountries[tempRnd]--;
+                }
+                else
+                    --i;
+                // damit land sicher vergeben wird
+            }
         }
 
 
@@ -417,234 +465,5 @@ namespace Risiko
             }
         }
 
-
-
-
-
-
-
-
-        // OLD
-        ///// <summary>
-        ///// Laden aus DB
-        ///// </summary>
-        //public void LoadCountriesFromDBSource()
-        //{
-        //    // Source einbinden
-        //    con.ConnectionString = "Provider=Microsoft.ACE.OLEDB.12.0;" +
-        //                           "Data Source=" + DataSourceString;
-
-        //    // Anzahl der Länder auslesen
-        //    GetNumberOfCountriesDB();
-
-        //    // Darin wird jeweils die Anzahl der Punkte gespeichert, um 0|0 Punkte zu vermeiden
-        //    int[] tempCounterPointsArray = new int[numberOfCountries];
-        //    int[] tempCounterNeighboursArray = new int[numberOfCountries];
-
-        //    GetNumberPointsArrayDB(ref tempCounterPointsArray);
-        //    GetNumberOfNeighboursArrayDB(ref tempCounterNeighboursArray);
-
-
-        //    cmd.Connection = con;
-        //    // Aus table Weltkarte (alles)
-        //    cmd.CommandText = "select * from Weltkarte;";
-
-        //    // Länder erzeugen
-        //    Countries = new Country[NumberOfCountries];
-
-        //    try
-        //    {
-        //        //öffnen
-        //        con.Open();
-        //        reader = cmd.ExecuteReader();
-
-        //        // Fortlaufender Zähler, zählt welche Country aktuell erzeugt werden muss
-        //        int counter = 0;
-
-        //        // temp Werte, die später dem Konstruktor der Country zugeführt werden
-        //        Color tempColorOfCountry;
-        //        string tempName;
-        //        Point[] tempPoints;
-
-        //        while (reader.Read())
-        //        {
-        //            // erzeugt entsprechend viele Punkte
-        //            tempPoints = new Point[tempCounterPointsArray[counter]];
-        //            // liest Farbe des Landes aus
-        //            tempColorOfCountry = GetColorFromString(Convert.ToString(reader["color"]));
-        //            // liest den Namen des Landes aus
-        //            tempName = Convert.ToString(reader["Land"]);
-
-        //            // Liest alle vorhandenen Punkte des Landes aus
-        //            for (int i = 1; i < 15; ++i)
-        //            {
-        //                if (Convert.ToInt32(reader["x" + i]) != -1)
-        //                    tempPoints[i - 1].X = Convert.ToInt32(reader["x" + i]);
-        //                if (Convert.ToInt32(reader["y" + i]) != -1)
-        //                    tempPoints[i - 1].Y = Convert.ToInt32(reader["y" + i]);
-        //            }
-
-        //            // Konstruktor der Country
-        //            Countries[counter] = new Country(tempName, tempPoints, tempColorOfCountry);
-        //            counter++;
-        //        }
-        //        reader.Close();
-        //        con.Close();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // temp String, falls Fehlermeldung
-        //        string temp = ex.Message;
-        //    }
-
-
-        //    // Laden der NachbarLänder (aus anderer Table)
-        //    cmd.CommandText = "select * from Neighbours;";
-        //    try
-        //    {
-        //        //öffnen
-        //        con.Open();
-        //        reader = cmd.ExecuteReader();
-
-        //        // Fortlaufender Zähler, zählt welche Country aktuell erzeugt werden muss
-        //        int counter = 0;
-
-        //        while (reader.Read())
-        //        {
-        //            string[] tempNeighbouringCountriesNames = new string[tempCounterNeighboursArray[counter]];
-        //            for (int i = 1; (i - 1) < tempCounterNeighboursArray[counter]; ++i)
-        //            {
-        //                int tempIDCountry = Convert.ToInt32(reader["Neighbour" + i]);
-        //                tempNeighbouringCountriesNames[i - 1] = Countries[tempIDCountry - 1].name;
-        //            }
-
-        //            // Konstruktor der Country
-        //            Countries[counter].neighbouringCountries = tempNeighbouringCountriesNames;
-        //            counter++;
-        //        }
-        //        reader.Close();
-        //        con.Close();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // temp String, falls Fehlermeldung
-        //        string temp = ex.Message;
-        //        MessageBox.Show(temp);
-        //    }
-
-        //}
-
-        ///// <summary>
-        ///// Liest die Anzahl der Länder, die Höhe und Breite der Karte
-        ///// aus der Source-DB aus
-        ///// </summary>
-        //private void GetNumberOfCountriesDB()
-        //{
-        //    cmd.Connection = con;
-        //    cmd.CommandText = "select * from Weltkarte;";
-        //    try
-        //    {
-        //        //öffnen
-        //        con.Open();
-        //        reader = cmd.ExecuteReader();
-
-        //        int tempMaxX = 0;
-        //        int tempMaxY = 0;
-
-        //        int tempNumberOfCountries = 0;
-        //        while (reader.Read())
-        //        {
-        //            for (int i = 1; i < 15; ++i)
-        //            {
-        //                if (reader["x" + i] != null & Convert.ToInt32(reader["x" + i]) > tempMaxX)
-        //                    tempMaxX = Convert.ToInt32(reader["x" + i]);
-        //                if (reader["y" + i] != null & Convert.ToInt32(reader["y" + i]) > tempMaxY)
-        //                    tempMaxY = Convert.ToInt32(reader["y" + i]);
-        //            }
-        //            ++tempNumberOfCountries;
-        //        }
-        //        height = tempMaxY;
-        //        width = tempMaxX;
-        //        NumberOfCountries = tempNumberOfCountries;
-        //        reader.Close();
-        //        con.Close();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        string temp = ex.Message;
-        //    }
-        //}
-
-        ///// <summary>
-        ///// Speichert die Anzahl der Nachbarländer in ParameterArray
-        ///// </summary>
-        ///// <param name="tempCounterOfNeighbours"></param>
-        //private void GetNumberOfNeighboursArrayDB(ref int[] tempCounterOfNeighbours)
-        //{
-        //    cmd.Connection = con;
-        //    cmd.CommandText = "select * from Neighbours;";
-        //    try
-        //    {
-        //        //öffnen
-        //        con.Open();
-        //        reader = cmd.ExecuteReader();
-
-        //        int Counter = 0;
-
-        //        while (reader.Read())
-        //        {
-        //            int tempNeighbourCounter = 0;
-        //            for (int i = 1; i < 11; ++i)
-        //            {
-        //                if (reader["Neighbour" + i] != null & Convert.ToInt32(reader["Neighbour" + i]) >= 1)
-        //                    tempNeighbourCounter++;
-        //            }
-        //            tempCounterOfNeighbours[Counter] = tempNeighbourCounter;
-        //            ++Counter;
-        //        }
-
-        //        reader.Close();
-        //        con.Close();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        string temp = ex.Message;
-        //    }
-        //}
-
-        ///// <summary>
-        ///// Speicher in dem Eingabe-Array die Anzahl der Punkte des
-        ///// jeweiligen Index, Country[x] -> temmCounterPointsArray[x] 
-        ///// </summary>
-        ///// <param name="tempCounterPointsArray">zuvor leerer Array</param>
-        //private void GetNumberPointsArrayDB(ref int[] tempCounterPointsArray)
-        //{
-        //    cmd.Connection = con;
-        //    cmd.CommandText = "select * from Weltkarte;";
-        //    try
-        //    {
-        //        //öffnen
-        //        con.Open();
-        //        reader = cmd.ExecuteReader();
-        //        int Counter = 0;
-        //        while (reader.Read())
-        //        {
-        //            int tempNumberOfPoints = 0;
-        //            for (int i = 1; i < 15; ++i)
-        //            {
-        //                if (Convert.ToInt32(reader["x" + i]) != -1 & Convert.ToInt32(reader["y" + i]) != -1)
-        //                    tempNumberOfPoints++;
-        //            }
-        //            tempCounterPointsArray[Counter] = tempNumberOfPoints;
-        //            Counter++;
-        //        }
-        //        reader.Close();
-        //        con.Close();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        string temp = ex.Message;
-        //    }
-        //}
     }
 }

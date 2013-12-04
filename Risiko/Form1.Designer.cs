@@ -39,6 +39,7 @@
             this.autoLanderkennungAktivierenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlMap = new System.Windows.Forms.Panel();
             this.btnEndTurn = new System.Windows.Forms.Button();
+            this.progBMenLeft = new System.Windows.Forms.ProgressBar();
             this.menuSMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -87,14 +88,14 @@
             // kartenDateiToolStripMenuItem
             // 
             this.kartenDateiToolStripMenuItem.Name = "kartenDateiToolStripMenuItem";
-            this.kartenDateiToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.kartenDateiToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.kartenDateiToolStripMenuItem.Text = "Datei öffnen...";
             this.kartenDateiToolStripMenuItem.Click += new System.EventHandler(this.kartenDateiToolStripMenuItem_Click);
             // 
             // neuesSpieToolStripMenuItem
             // 
             this.neuesSpieToolStripMenuItem.Name = "neuesSpieToolStripMenuItem";
-            this.neuesSpieToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.neuesSpieToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.neuesSpieToolStripMenuItem.Text = "Neues Spiel";
             this.neuesSpieToolStripMenuItem.Click += new System.EventHandler(this.neuesSpieToolStripMenuItem_Click);
             // 
@@ -144,11 +145,19 @@
             this.btnEndTurn.UseVisualStyleBackColor = true;
             this.btnEndTurn.Click += new System.EventHandler(this.btnEndTurn_Click);
             // 
+            // progBMenLeft
+            // 
+            this.progBMenLeft.Location = new System.Drawing.Point(883, 24);
+            this.progBMenLeft.Name = "progBMenLeft";
+            this.progBMenLeft.Size = new System.Drawing.Size(13, 540);
+            this.progBMenLeft.TabIndex = 0;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(896, 605);
+            this.Controls.Add(this.progBMenLeft);
             this.Controls.Add(this.btnEndTurn);
             this.Controls.Add(this.pnlMap);
             this.Controls.Add(this.lblMessage);
@@ -183,6 +192,7 @@
         private System.Windows.Forms.ToolStripMenuItem autoLanderkennungAktivierenToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem neuesSpieToolStripMenuItem;
         private System.Windows.Forms.Button btnEndTurn;
+        private System.Windows.Forms.ProgressBar progBMenLeft;
     }
 }
 

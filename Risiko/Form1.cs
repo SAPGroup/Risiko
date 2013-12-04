@@ -131,8 +131,7 @@ namespace Risiko
         /// <summary>
         /// Draw Map without Load, Lädt die Daten nicht erneut aus der Datenbank
         /// womit diese Funktion schneller ist, außerdem ist das Laden
-        /// nur anfangs notwendig und würde zu Geschwindigkeitseinußen führen
-        /// jedoch wird durch das neu-setzten der Bitmap ein Flackern erzeugt
+        /// nur anfangs notwendig und würde zu Geschwindigkeitseinbußen führen
         /// </summary>
         private void DrawMapWoLoad()
         {
@@ -260,8 +259,15 @@ namespace Risiko
 
             if (temp != -1)
             {
-
-                MessageBox.Show(Game.countries[temp].name);
+                if (Game.turnOfPlayer != -1 & Game.gameState == 0)
+                {
+                    Game.countries[temp].owner = Game.turnOfPlayer;
+                    Game.players[Game.turnOfPlayer].unitsPT--;
+                    Game.countries[temp].unitsStationed++;
+                    DrawMiddleCircle(temp);
+                } 
+                // Temp und momentan störend
+                //MessageBox.Show(Game.countries[temp].name);
             }
 
         }
@@ -275,7 +281,7 @@ namespace Risiko
         {
             // hier könnte man DrawnMap (bool (Map bereits gezeichnet)) auch abfragen, jedoch unnötig
             // da bereits in CheckClickOnPolygon
-            if (autoLanderkennung == true)
+            if (autoLanderkennung)
             {
                 Point clickedPosition = new Point(e.X, e.Y);
                 //int temp = checkClickOnPolygon(clickedPosition);
@@ -294,6 +300,8 @@ namespace Risiko
                     Game.countries[tempIndex].colorOfCountry = tempSelCountry;
 
                     DrawCountry(tempIndex);
+                    // da sonst Kreis in der Mitte verschwindet
+                    DrawMiddleCircle(tempIndex);
                     tempIndex = -1;
                     DrawFlag = true;
                 }
@@ -304,6 +312,8 @@ namespace Risiko
                     {
                         Game.countries[tempIndex].colorOfCountry = tempSelCountry;
                         DrawCountry(tempIndex);
+                        // da sonst der Kreis in der Mitte verschwindet
+                        DrawMiddleCircle(tempIndex);
                     }
 
                     tempSelCountry = Game.countries[temp].colorOfCountry;
@@ -313,10 +323,8 @@ namespace Risiko
                     DrawFlag = true;
 
                     DrawCountry(temp);
-
-                    // Flackern behoben!!
-                    // Flackert, da jedes mal das BackGroundImage des pnl neu gesetzt wird
-                    // DrawMapWoLoad();
+                    // da sonst Kreis in der Mitte verschwindet
+                    DrawMiddleCircle(temp);
                 }
             }
 
@@ -384,17 +392,16 @@ namespace Risiko
             // Gibt der Form2 "alles" als Parameter mit
             // für veränderungen usw.
             Form2 newGame = new Form2(this);
-            // Lädt Form2
+            // Lädt Form2, in der Spieler eingegeben werden
             newGame.ShowDialog();
 
-            //// old
-            //Player[] tempPlayers = new Player[5];
-            //// Spiel wird gestartet
-            //Game.SetPlayersOnly(0 ,tempPlayers.Length, tempPlayers);
-            //for (int i = 0;i < tempPlayers.Length;++i)
-            //{
-            //    // einzelne Spielerwerte setzten
-            //}
+            // Auslesen und vergeben der Länder
+            Game.LoadCountriesFromDBSource();
+            Game.SpreadCountriesToPlayers();
+
+            // eigentlich temp, später vlt mehr anzeigen+
+            // gibt Spieler der aktuell am Zug ist aus
+            lblMessage.Text = Convert.ToString(Game.players[Game.turnOfPlayer].name);
         }
       
 
@@ -430,7 +437,7 @@ namespace Risiko
                         realPoints[j].Y = (tempPoints[j].Y * Factor);
                     }
 
-                    if (PointInPolygon(ClickedPosition, realPoints) == true)
+                    if (PointInPolygon(ClickedPosition, realPoints))
                         return i;
                 }
             }
@@ -494,9 +501,13 @@ namespace Risiko
                 DrawNeighbours();
 
                 // später wahrscheinlich benötigt
-                Game.turnOfPlayer++;
-                if (Game.turnOfPlayer >= Game.numberOfPlayers)
-                    Game.turnOfPlayer = 0;
+                if (Game.players != null)
+                {
+                    Game.turnOfPlayer++;
+                    if (Game.turnOfPlayer >= Game.players.Length)
+                        Game.turnOfPlayer = 0;
+                    lblMessage.Text = Convert.ToString(Game.players[Game.turnOfPlayer].name);
+                }       
             }     
         }
 
@@ -527,7 +538,6 @@ namespace Risiko
         /// <param name="Country"></param>
         public void DrawMiddleCircle(int Country)
         {
-            int NumberOfMen = 0;                                // Game.countries[Country].unitsStationed; fällt momentan weg
             Point[] realPoints = GetRealPointsFromCorners(Game.countries[Country].corners);
             Point Middle = GetMiddleOfPolygon(realPoints);
             
@@ -541,7 +551,9 @@ namespace Risiko
             //zum schreiben
             Font f = new Font("Arial", 10);
             tempObjectbrush = new SolidBrush(Color.White);
-            temp.DrawString(Convert.ToString(NumberOfMen), f, tempObjectbrush, Middle.X-5, Middle.Y-5);
+
+            // -5 magic, TODO: Verbessern, passt nicht immer (nicht immer in der Mitte -> zweistellig usw.)
+            temp.DrawString(Convert.ToString(Game.countries[Country].unitsStationed), f, tempObjectbrush, Middle.X - 5, Middle.Y - 5);
         }
 
         /// <summary>
@@ -603,7 +615,7 @@ namespace Risiko
 
         /// <summary>
         /// TEMP:
-        /// Zeichnet Nachbarländer
+        /// Zeichnet Nachbarländer (zeichnet das Netzwerk an Nachbarländern) 
         /// um zu überprüfen ob die Nachbarläner richtig ausgelesen wurden
         /// </summary>
         public void DrawNeighbours()

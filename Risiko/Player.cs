@@ -31,7 +31,7 @@ namespace Risiko
         private int UnitsPT;
 
         /// <summary>
-        /// Legt fest ob Computergegner oder Eigener Spieler
+        /// Legt fest ob Computergegner oder "richtiger" Spieler
         /// </summary>
         private bool AIPlayer;
 
@@ -127,6 +127,24 @@ namespace Risiko
             Name = NameIn;
             OwnedCountries = OwnedCountriesIn;
             UnitsInCountries = UnitsInCountriesIn;
+        }
+
+        /// <summary>
+        /// Fügt ein Land dem StringArray der besitzenden Länder hinzu
+        /// </summary>
+        /// <param name="CountryName"></param>
+        public void AddOwnedCountry(string CountryName)
+        {
+            if (ownedCountries != null)
+            {
+                string[] tempCountries = new string[ownedCountries.Length + 1];
+                for (int i = 0; i < ownedCountries.Length; ++i)
+                {
+                    tempCountries[i] = ownedCountries[i];
+                }
+                tempCountries[ownedCountries.Length + 1] = CountryName;
+                ownedCountries = tempCountries;
+            } 
         }
     }
 }
