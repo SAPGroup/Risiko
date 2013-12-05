@@ -46,7 +46,7 @@
             // btnDrawMap
             // 
             this.btnDrawMap.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnDrawMap.Location = new System.Drawing.Point(12, 570);
+            this.btnDrawMap.Location = new System.Drawing.Point(12, 582);
             this.btnDrawMap.Name = "btnDrawMap";
             this.btnDrawMap.Size = new System.Drawing.Size(140, 23);
             this.btnDrawMap.TabIndex = 1;
@@ -58,7 +58,7 @@
             // 
             this.lblMessage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblMessage.AutoSize = true;
-            this.lblMessage.Location = new System.Drawing.Point(441, 575);
+            this.lblMessage.Location = new System.Drawing.Point(441, 587);
             this.lblMessage.Name = "lblMessage";
             this.lblMessage.Size = new System.Drawing.Size(30, 13);
             this.lblMessage.TabIndex = 3;
@@ -129,7 +129,7 @@
             this.pnlMap.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.pnlMap.Location = new System.Drawing.Point(12, 24);
             this.pnlMap.Name = "pnlMap";
-            this.pnlMap.Size = new System.Drawing.Size(872, 540);
+            this.pnlMap.Size = new System.Drawing.Size(872, 542);
             this.pnlMap.TabIndex = 5;
             this.pnlMap.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pnlMap_MouseMove);
             this.pnlMap.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pnlMap_MouseUp);
@@ -137,7 +137,7 @@
             // btnEndTurn
             // 
             this.btnEndTurn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnEndTurn.Location = new System.Drawing.Point(778, 570);
+            this.btnEndTurn.Location = new System.Drawing.Point(778, 582);
             this.btnEndTurn.Name = "btnEndTurn";
             this.btnEndTurn.Size = new System.Drawing.Size(106, 23);
             this.btnEndTurn.TabIndex = 6;
@@ -147,16 +147,16 @@
             // 
             // progBMenLeft
             // 
-            this.progBMenLeft.Location = new System.Drawing.Point(883, 24);
+            this.progBMenLeft.Location = new System.Drawing.Point(323, 566);
             this.progBMenLeft.Name = "progBMenLeft";
-            this.progBMenLeft.Size = new System.Drawing.Size(13, 540);
+            this.progBMenLeft.Size = new System.Drawing.Size(268, 12);
             this.progBMenLeft.TabIndex = 0;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(896, 605);
+            this.ClientSize = new System.Drawing.Size(896, 617);
             this.Controls.Add(this.progBMenLeft);
             this.Controls.Add(this.btnEndTurn);
             this.Controls.Add(this.pnlMap);

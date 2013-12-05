@@ -122,6 +122,13 @@ namespace Risiko
             set { UnitsPT = value; }
         }
 
+        public Color playerColor
+        {
+            get { return PlayerColor; }
+            set { playerColor = value; }
+        }
+
+
         public void SetAllValues(string NameIn, string[] OwnedCountriesIn, int[] UnitsInCountriesIn)
         {
             Name = NameIn;

@@ -92,7 +92,10 @@ namespace Risiko
         private void btnDrawMap_Click(object sender, EventArgs e)
         {
             // TODO: Abfrage ob Quelldatei vorhanden ist (vlt schon bei Load Fehlermeldung)
-            DrawAndLoadMap();   
+            if(DrawnMap)
+                DrawMapWoLoad();
+            else
+                DrawAndLoadMap();   
         }
 
         /// <summary>
@@ -192,19 +195,6 @@ namespace Risiko
         }
 
         /// <summary>
-        /// "Löscht" die Karte, bisher nicht benötigt
-        /// </summary>
-        private void RubberMap()
-        {
-            z_asBitmap = new Bitmap(pnlMap.Width, pnlMap.Height);
-            z = Graphics.FromImage(z_asBitmap);
-
-            z.FillRectangle(rubber, 0,0,pnlMap.Width,pnlMap.Height);
-
-            pnlMap.BackgroundImage = z_asBitmap;
-        }
-
-        /// <summary>
         /// Leer!!
         /// </summary>
         /// <param name="sender"></param>
@@ -259,11 +249,13 @@ namespace Risiko
 
             if (temp != -1)
             {
-                if (Game.turnOfPlayer != -1 & Game.gameState == 0)
+                if (Game.turnOfPlayer != -1 & Game.gameState == 0 & Game.players[Game.turnOfPlayer].unitsPT > 0)
                 {
                     Game.countries[temp].owner = Game.turnOfPlayer;
                     Game.players[Game.turnOfPlayer].unitsPT--;
                     Game.countries[temp].unitsStationed++;
+                    // für pBar
+                    progBMenLeft.Value = Game.players[Game.turnOfPlayer].unitsPT;
                     DrawMiddleCircle(temp);
                 } 
                 // Temp und momentan störend
@@ -402,6 +394,9 @@ namespace Risiko
             // eigentlich temp, später vlt mehr anzeigen+
             // gibt Spieler der aktuell am Zug ist aus
             lblMessage.Text = Convert.ToString(Game.players[Game.turnOfPlayer].name);
+            // vlt temp
+            progBMenLeft.Maximum = Game.players[Game.turnOfPlayer].unitsPT;
+            progBMenLeft.Value = Game.players[Game.turnOfPlayer].unitsPT;
         }
       
 
@@ -637,6 +632,23 @@ namespace Risiko
                         GetRealMiddleOfPolygon(Game.countries[i].corners).Y);
                 }        
             }
+        }
+
+
+
+
+        // OLD, wird vermutlich nicht benötigt werden
+        /// <summary>
+        /// "Löscht" die Karte, bisher nicht benötigt
+        /// </summary>
+        private void RubberMap()
+        {
+            z_asBitmap = new Bitmap(pnlMap.Width, pnlMap.Height);
+            z = Graphics.FromImage(z_asBitmap);
+
+            z.FillRectangle(rubber, 0, 0, pnlMap.Width, pnlMap.Height);
+
+            pnlMap.BackgroundImage = z_asBitmap;
         }
     }
 }

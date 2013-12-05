@@ -314,6 +314,10 @@ namespace Risiko
                     --i;
                 // damit land sicher vergeben wird
             }
+            for (int i = 0;i < countries.Length;++i)
+            {
+                countries[i].colorOfCountry = players[countries[i].owner].playerColor;
+            }
         }
 
 
