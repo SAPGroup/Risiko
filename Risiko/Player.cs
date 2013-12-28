@@ -122,10 +122,13 @@ namespace Risiko
             set { UnitsPT = value; }
         }
 
+        /// <summary>
+        /// Set und Get der SpielerFarbe
+        /// </summary>
         public Color playerColor
         {
             get { return PlayerColor; }
-            set { playerColor = value; }
+            set { PlayerColor = value; }
         }
 
 

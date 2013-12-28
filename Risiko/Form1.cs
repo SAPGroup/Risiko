@@ -641,14 +641,14 @@ namespace Risiko
         /// <summary>
         /// "Löscht" die Karte, bisher nicht benötigt
         /// </summary>
-        private void RubberMap()
-        {
-            z_asBitmap = new Bitmap(pnlMap.Width, pnlMap.Height);
-            z = Graphics.FromImage(z_asBitmap);
+        //private void RubberMap()
+        //{
+        //    z_asBitmap = new Bitmap(pnlMap.Width, pnlMap.Height);
+        //    z = Graphics.FromImage(z_asBitmap);
 
-            z.FillRectangle(rubber, 0, 0, pnlMap.Width, pnlMap.Height);
+        //    z.FillRectangle(rubber, 0, 0, pnlMap.Width, pnlMap.Height);
 
-            pnlMap.BackgroundImage = z_asBitmap;
-        }
+        //    pnlMap.BackgroundImage = z_asBitmap;
+        //}
     }
 }

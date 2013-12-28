@@ -22,6 +22,14 @@ namespace Risiko
         OleDbDataReader reader;
         
         /// <summary>
+        /// Zufallsgenerator, hier konstruiert, da sonst Zufallszahl
+        /// eventuell die gleiche ist, da zu schnell hintereinander 
+        /// konstruiert werden würde
+        /// </summary>
+        Random rnd = new Random();
+
+
+        /// <summary>
         /// Pfad der Quelldatei!!
         /// syntax: con.ConnectionString = "Provider=Microsoft.ACE.OLEDB.12.0;" +
         /// "Data Source=C:\\Temp\\Risiko_Weltkarte.accdb";
@@ -267,7 +275,10 @@ namespace Risiko
                 return Color.White;
         }
 
-
+        /// <summary>
+        /// Verteilt die Länder an die Spieler, zufallsgeneriert
+        /// TODO: Option Länder selbst auswählen, abwechselnd Einheit in verfügbares Land setzen
+        /// </summary>
         public void SpreadCountriesToPlayers()
         {
             Random rnd = new Random();
@@ -469,5 +480,97 @@ namespace Risiko
             }
         }
 
+
+        public void AttackCountry(ref Country Attacker,ref Country Defender,ref int NumberOfAttackers, ref int NumberOfDefenders)
+        {
+            // 1:1 Angreifer:Verteidiger
+            if (NumberOfAttackers == 1 & NumberOfDefenders == 1)
+            {
+                // Verteidiger gewinnt
+                if (ThrowDices() >= ThrowDices())
+                {
+                    NumberOfAttackers = 0;
+                    Attacker.unitsStationed--;
+                }
+                // Angreifer gewinnt
+                else
+                {
+                    Defender.unitsStationed--;
+                    //falls keine Verteidiger mehr übrig
+                    if (Defender.unitsStationed == 0)
+                    {
+                        Defender.owner = Attacker.owner;
+                        Defender.unitsStationed = NumberOfAttackers;
+                        Defender.colorOfCountry = Players[Attacker.owner].playerColor;
+                    }
+                }
+            }
+
+            // 1:2
+            else if (NumberOfAttackers == 1 & NumberOfDefenders >= 2)
+            {
+                // VerteidigerWurf festlegen, nur 1 da nur einer zählt
+                int DefendNumber = 0;
+                int temp1 = ThrowDices();
+                int temp2 = ThrowDices();
+                if (temp2 > temp1)
+                    DefendNumber = temp2;
+                else
+                {
+                    DefendNumber = temp1;
+                }
+
+                // Verteidiger gewinnt
+                if (DefendNumber >= ThrowDices())
+                {
+                    NumberOfAttackers = 0;
+                    Attacker.unitsStationed--;
+                }
+                else
+                {
+                    Defender.unitsStationed--;
+                }
+            }
+            else if (NumberOfAttackers == 2)
+            {
+                // Würfeln Angreifer, und höheren Wert auf AN1 setzen
+                int AttackNumber1 = ThrowDices();
+                int AttackNumber2 = ThrowDices();
+                if (AttackNumber2 > AttackNumber1)
+                {
+                    int temp = AttackNumber1;
+                    AttackNumber1 = AttackNumber2;
+                    AttackNumber2 = temp;
+                }
+                // Würfeln Verteidiger, und höheren Wert auf DN1 setzen
+                int DefendNumber1 = ThrowDices();
+                int DefendNumber2 = ThrowDices();
+                if (DefendNumber2 > DefendNumber1)
+                {
+                    int temp = DefendNumber1;
+                    DefendNumber1 = DefendNumber2;
+                    DefendNumber2 = temp;
+                }
+
+                // Auswerten
+            }
+            else if (NumberOfAttackers >= 3)
+            {
+                
+            }
+        }
+
+
+
+
+        /// <summary>
+        /// Würfelt und gibt Augenzahl zurück
+        /// </summary>
+        /// <returns></returns>
+        private int ThrowDices()
+        {
+            int Number = (int) (rnd.NextDouble()*5) + 1;
+            return Number;
+        }
     }
 }
