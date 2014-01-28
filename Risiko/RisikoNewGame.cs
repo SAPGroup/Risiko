@@ -10,23 +10,23 @@ using System.Windows.Forms;
 
 namespace Risiko
 {
-    public partial class Form2 : Form
+    public partial class RisikoNewGame : Form
     {
 
         // Lädt "alles" aus Form 1;
-        private Form1 fh;
+        private RisikoMain fh;
         // Wird nachher an Form1 zurückgegeben, mit geänderten Player-Werten
         GameField tempGame;
         // Array der die alten Werte speichert, falls änderung
         // Bisherige Fehler bei Bennung der KI (Nummer) -> vlt einfach Farbe zum Namen hinzufügen
         // TODO: private bool[] KI;
 
-        public Form2()
+        public RisikoNewGame()
         {
             InitializeComponent();
         }
 
-        public Form2(Form1 aufrufer)
+        public RisikoNewGame(RisikoMain aufrufer)
         {
             fh = aufrufer;
             tempGame = aufrufer.GetGame();
@@ -60,7 +60,7 @@ namespace Risiko
             }
             // Werte werden in GameField übernommen
             tempGame.players = PlayersStart;
-            tempGame.turnOfPlayer = 0;
+            tempGame.actualPlayer = PlayersStart[0];
             tempGame.gameState = 0;
             // GameField in Form1 wird mit lokalem verändertem GameField überschrieben
             fh.SetGame(tempGame);

@@ -13,7 +13,7 @@ using System.IO;
 
 namespace Risiko
 {
-    public partial class Form1 : Form
+    public partial class RisikoMain : Form
     {
         // zum Zeichnen
         private Bitmap z_asBitmap;                                              //Bilddatei der Graphic z
@@ -46,7 +46,7 @@ namespace Risiko
         private int tempIndex = -1;
 
         
-        public Form1()
+        public RisikoMain()
         {
             InitializeComponent();
         }
@@ -112,8 +112,8 @@ namespace Risiko
 
             for (int i = 0; i < Game.numberOfCountries; ++i)
             {
-                Point[] tempPoints = Game.GiveCountryToDraw(i).corners;
-                Point[] realPoints = new Point[Game.GiveCountryToDraw(i).corners.Length];
+                Point[] tempPoints = Game.GiveCountry(i).corners;
+                Point[] realPoints = new Point[Game.GiveCountry(i).corners.Length];
 
                 for (int j = 0; j < realPoints.Length; ++j)
                 {
@@ -121,7 +121,7 @@ namespace Risiko
                     realPoints[j].Y = (tempPoints[j].Y * Factor);
                 }
 
-                SolidBrush tempObjectbrush = new SolidBrush(Game.GiveCountryToDraw(i).colorOfCountry);
+                SolidBrush tempObjectbrush = new SolidBrush(Game.GiveCountry(i).colorOfCountry);
                 z.FillPolygon(tempObjectbrush, realPoints);
                 z.DrawPolygon(stift, realPoints);
             }
@@ -147,8 +147,8 @@ namespace Risiko
 
                 for (int i = 0; i < Game.numberOfCountries; ++i)
                 {
-                    Point[] tempPoints = Game.GiveCountryToDraw(i).corners;
-                    Point[] realPoints = new Point[Game.GiveCountryToDraw(i).corners.Length];
+                    Point[] tempPoints = Game.GiveCountry(i).corners;
+                    Point[] realPoints = new Point[Game.GiveCountry(i).corners.Length];
 
                     for (int j = 0; j < realPoints.Length; ++j)
                     {
@@ -156,7 +156,7 @@ namespace Risiko
                         realPoints[j].Y = (tempPoints[j].Y * Factor);
                     }
 
-                    SolidBrush tempObjectbrush = new SolidBrush(Game.GiveCountryToDraw(i).colorOfCountry);
+                    SolidBrush tempObjectbrush = new SolidBrush(Game.GiveCountry(i).colorOfCountry);
                     z.FillPolygon(tempObjectbrush, realPoints);
                     z.DrawPolygon(stift, realPoints);
                 }
@@ -210,14 +210,14 @@ namespace Risiko
         /// allerdings nur ein Land, womit zu viel zeichnen vermieden wird
         /// -> kein Flackern
         /// </summary>
-        /// <param name="IndexIn"></param>
+        /// <param name="IndexIn">Index des Landes</param>
         private void DrawCountry(int IndexIn)
         {
             Graphics temp;
             temp = pnlMap.CreateGraphics();
 
-            Point[] tempPoints = Game.GiveCountryToDraw(IndexIn).corners;
-            Point[] realPoints = new Point[Game.GiveCountryToDraw(IndexIn).corners.Length];
+            Point[] tempPoints = Game.GiveCountry(IndexIn).corners;
+            Point[] realPoints = new Point[Game.GiveCountry(IndexIn).corners.Length];
 
             for (int i = 0; i < realPoints.Length; ++i)
             {
@@ -225,7 +225,7 @@ namespace Risiko
                 realPoints[i].Y = (tempPoints[i].Y * Factor);
             }
 
-            SolidBrush tempObjectbrush = new SolidBrush(Game.GiveCountryToDraw(IndexIn).colorOfCountry);
+            SolidBrush tempObjectbrush = new SolidBrush(Game.GiveCountry(IndexIn).colorOfCountry);
             temp.FillPolygon(tempObjectbrush, realPoints);
             temp.DrawPolygon(stift, realPoints);
         }
@@ -246,22 +246,32 @@ namespace Risiko
 
             //int temp = checkClickOnPolygon(clickedPosition);
             int temp = CheckClickInPolygon(clickedPosition);
-
-            if (temp != -1)
+            if (e.Button == MouseButtons.Right)
             {
-                if (Game.turnOfPlayer != -1 & Game.gameState == 0 & Game.players[Game.turnOfPlayer].unitsPT > 0)
+                if (temp != -1)
                 {
-                    Game.countries[temp].owner = Game.turnOfPlayer;
-                    Game.players[Game.turnOfPlayer].unitsPT--;
-                    Game.countries[temp].unitsStationed++;
-                    // für pBar
-                    progBMenLeft.Value = Game.players[Game.turnOfPlayer].unitsPT;
-                    DrawMiddleCircle(temp);
-                } 
-                // Temp und momentan störend
-                //MessageBox.Show(Game.countries[temp].name);
+                    // TODO: Einheiten zurücknehmen
+                }
             }
+            else if(e.Button == MouseButtons.Left)
+            {
+                if (temp != -1)
+                {
+                    // TODO: wenn noch keine Spieler, sonst null error
+                    if (Game.actualPlayer != null & Game.gameState == 0 & Game.actualPlayer.unitsPT > 0)
+                    {
+                        Game.countries[temp].owner = Game.actualPlayer;
+                        Game.actualPlayer.unitsPT--;
+                        Game.countries[temp].unitsStationed++;
 
+                        // für pBar
+                        progBMenLeft.Value = Game.actualPlayer.unitsPT;
+                        DrawMiddleCircle(temp);
+                    }
+                    // Temp und momentan störend
+                    //MessageBox.Show(Game.countries[temp].name);
+                }
+            }
         }
 
         /// <summary>
@@ -341,8 +351,10 @@ namespace Risiko
             if(ofd.ShowDialog() == DialogResult.OK)
                 foreach (string s in ofd.FileNames)
                 {
-                    //später bei mehreren Source-Dateien
-                    //Game.dataSourceString = s;
+                    // für mehrere SourceDateien, bzw bei anderen Map-Dateien
+                    Game.dataSourceString = s;
+                    DrawAndLoadMap();
+                    DrawnMap = true;
                     MessageBox.Show("Öffnen: " + s);
                 }
             else
@@ -383,7 +395,7 @@ namespace Risiko
         {
             // Gibt der Form2 "alles" als Parameter mit
             // für veränderungen usw.
-            Form2 newGame = new Form2(this);
+            RisikoNewGame newGame = new RisikoNewGame(this);
             // Lädt Form2, in der Spieler eingegeben werden
             newGame.ShowDialog();
 
@@ -393,10 +405,10 @@ namespace Risiko
 
             // eigentlich temp, später vlt mehr anzeigen+
             // gibt Spieler der aktuell am Zug ist aus
-            lblMessage.Text = Convert.ToString(Game.players[Game.turnOfPlayer].name);
+            lblMessage.Text = Convert.ToString(Game.actualPlayer.name);
             // vlt temp
-            progBMenLeft.Maximum = Game.players[Game.turnOfPlayer].unitsPT;
-            progBMenLeft.Value = Game.players[Game.turnOfPlayer].unitsPT;
+            progBMenLeft.Maximum = Game.actualPlayer.unitsPT;
+            progBMenLeft.Value = Game.actualPlayer.unitsPT;
         }
       
 
@@ -416,15 +428,15 @@ namespace Risiko
         /// <returns></returns>
         public int CheckClickInPolygon(Point ClickedPosition)
         {
-            if (DrawnMap == true)
+            if (DrawnMap)
             {
                 //Länder, die überprüft werden sollen, werden in Array checkCountries[] geladen
                 Country[] checkCountries = Game.countries;
 
                 for (int i = 0; i < checkCountries.Length; ++i)
                 {
-                    Point[] tempPoints = Game.GiveCountryToDraw(i).corners;
-                    Point[] realPoints = new Point[Game.GiveCountryToDraw(i).corners.Length];
+                    Point[] tempPoints = Game.GiveCountry(i).corners;
+                    Point[] realPoints = new Point[Game.GiveCountry(i).corners.Length];
 
                     for (int j = 0; j < realPoints.Length; ++j)
                     {
@@ -498,10 +510,23 @@ namespace Risiko
                 // später wahrscheinlich benötigt
                 if (Game.players != null)
                 {
-                    Game.turnOfPlayer++;
-                    if (Game.turnOfPlayer >= Game.players.Length)
-                        Game.turnOfPlayer = 0;
-                    lblMessage.Text = Convert.ToString(Game.players[Game.turnOfPlayer].name);
+                    int tempActualIndex = -1;
+                    for (int i = 0;i < Game.players.Length;++i)
+                    {
+                        if (Game.players[i].name == Game.actualPlayer.name)
+                        {
+                            tempActualIndex = i;
+                            break;
+                        }    
+                    }
+                    Game.players[tempActualIndex] = Game.actualPlayer;
+
+                    if (++tempActualIndex >= Game.players.Length)
+                        tempActualIndex -= Game.players.Length;
+
+                    Game.actualPlayer = Game.players[tempActualIndex];
+                    
+                    lblMessage.Text = Convert.ToString(Game.actualPlayer.name);
                 }       
             }     
         }
@@ -632,6 +657,11 @@ namespace Risiko
                         GetRealMiddleOfPolygon(Game.countries[i].corners).Y);
                 }        
             }
+        }
+
+        private void pnlMap_Paint(object sender, PaintEventArgs e)
+        {
+
         }
 
 

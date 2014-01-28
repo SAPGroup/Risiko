@@ -28,7 +28,7 @@ namespace Risiko
         /// <summary>
         /// Besitzender Spieler, -1 kein spieler
         /// </summary>
-        private int Owner;
+        private Player Owner;
 
         /// <summary>
         /// Anzahl der Einheiten im Land
@@ -57,7 +57,7 @@ namespace Risiko
             Name = "";
             ColorOfCountry = Color.Black;
             UnitsStationed = 0;
-            Owner = -1;
+            Owner = null;
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace Risiko
         /// </summary>
         /// <param name="CornersIn"></param>
         /// <param name="NameIn"></param>
-        public void SetValues(Point[] CornersIn, string NameIn, Color ColorIn, int OwnerIn, int UnitsStationedIn)
+        public void SetValues(Point[] CornersIn, string NameIn, Color ColorIn, Player OwnerIn, int UnitsStationedIn)
         {
             Corners = CornersIn;
             Name = NameIn;
@@ -148,14 +148,10 @@ namespace Risiko
         /// <summary>
         /// Set und Get des Besitzers
         /// </summary>
-        public int owner
+        public Player owner
         {
             get { return Owner; }
-            set
-            {
-                if(value >= 0)
-                    Owner = value; 
-            }
+            set { Owner = value; }
         }
 
         /// <summary>

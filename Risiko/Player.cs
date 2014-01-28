@@ -12,7 +12,7 @@ namespace Risiko
         /// <summary>
         /// Array aller besetzten Länder
         /// </summary>
-        private string[] OwnedCountries;
+        private Country[] OwnedCountries;
 
         /// <summary>
         /// Name des Spielers
@@ -56,7 +56,7 @@ namespace Risiko
         /// </summary>
         /// <param name="NameIn"></param>
         /// <param name="OwnedCountriesIn"></param>
-        public Player(string NameIn, string[] OwnedCountriesIn)
+        public Player(string NameIn, Country[] OwnedCountriesIn)
         {
             Name = NameIn;
             OwnedCountries = OwnedCountriesIn;
@@ -67,7 +67,7 @@ namespace Risiko
         /// </summary>
         /// <param name="NameIn"></param>
         /// <param name="OwnedCountriesIn"></param>
-        public Player(string NameIn, string[] OwnedCountriesIn, bool IsAIPlayer)
+        public Player(string NameIn, Country[] OwnedCountriesIn, bool IsAIPlayer)
         {
             Name = NameIn;
             OwnedCountries = OwnedCountriesIn;
@@ -107,7 +107,7 @@ namespace Risiko
         /// <summary>
         /// Set- und Get- Methode der besetzten Ländern
         /// </summary>
-        public string[] ownedCountries
+        public Country[] ownedCountries
         {
             get { return OwnedCountries; }
             set { OwnedCountries = value; }
@@ -132,7 +132,7 @@ namespace Risiko
         }
 
 
-        public void SetAllValues(string NameIn, string[] OwnedCountriesIn, int[] UnitsInCountriesIn)
+        public void SetAllValues(string NameIn, Country[] OwnedCountriesIn, int[] UnitsInCountriesIn)
         {
             Name = NameIn;
             OwnedCountries = OwnedCountriesIn;
@@ -143,17 +143,18 @@ namespace Risiko
         /// Fügt ein Land dem StringArray der besitzenden Länder hinzu
         /// </summary>
         /// <param name="CountryName"></param>
-        public void AddOwnedCountry(string CountryName)
+        public void AddOwnedCountry(Country CountryIn)
         {
             if (ownedCountries != null)
             {
-                string[] tempCountries = new string[ownedCountries.Length + 1];
-                for (int i = 0; i < ownedCountries.Length; ++i)
+                Country[] newOwnedCountries = new Country[ownedCountries.Length];
+                for (int i = 0;i < ownedCountries.Length;++i)
                 {
-                    tempCountries[i] = ownedCountries[i];
+                    newOwnedCountries[i] = ownedCountries[i];
                 }
-                tempCountries[ownedCountries.Length + 1] = CountryName;
-                ownedCountries = tempCountries;
+                newOwnedCountries[ownedCountries.Length + 1] = CountryIn;
+
+                ownedCountries = newOwnedCountries;
             } 
         }
     }

@@ -62,12 +62,11 @@ namespace Risiko
         /// <summary>
         /// Index des Spielers deraktuell am Zug ist, bei 0 beginnend
         /// </summary>
-        private int TurnOfPlayer = -1;
+        private Player ActualPlayer = null;
 
         /// <summary>
-        /// Aktueller Statur, 0 Setzen der Spieler
-        /// wenn alles gesetzt wurde, 1 für das Setzten der neuen Männer,
-        /// 2 angreifen, 3 ziehen
+        /// Aktueller Status, 0 Setzen der Spieler
+        /// 1 angreifen, 2 ziehen
         /// </summary>
         private int GameState = -1;
 
@@ -109,14 +108,10 @@ namespace Risiko
         /// Set- und Get- Methoden für den Spieler
         /// der ander Reihe ist
         /// </summary>
-        public int turnOfPlayer
+        public Player actualPlayer
         {
-            get { return TurnOfPlayer; }
-            set
-            {
-                if (value >= 0)
-                    TurnOfPlayer = value;
-            }
+            get { return ActualPlayer; }
+            set { ActualPlayer = value; }
         }
 
         /// <summary>
@@ -171,7 +166,7 @@ namespace Risiko
             NumberOfCountries = 0;
             Height = 0;
             Width = 0;
-            TurnOfPlayer = 0;
+            ActualPlayer = null;
         }
 
         /// <summary>
@@ -180,16 +175,20 @@ namespace Risiko
         /// <param name="CountriesIn"></param>
         /// <param name="LengthIn"></param>
         /// <param name="WidthIn"></param>
-        public GameField(int CountriesIn, int LengthIn, int WidthIn, int TurnOfPlayerIn)
+        public GameField(int CountriesIn, int LengthIn, int WidthIn, Player ActualPlayerIn)
         {
             NumberOfCountries = CountriesIn;
             Height = LengthIn;
             Width = WidthIn;
-            TurnOfPlayer = TurnOfPlayerIn;
+            ActualPlayer = ActualPlayerIn;
         }
 
-        //
 
+
+
+
+
+        //
         // Set für die Variablen (ohne Player, mit, nur Player)
         /// <summary>
         /// Festlegen der Werte der Karte, (ohne Player)
@@ -212,12 +211,12 @@ namespace Risiko
         /// <param name="WidthIn"></param>
         /// <param name="TurnOfPlayerIn"></param>
         /// <param name="NumberOfPlayersIn"></param>
-        public void SetAllValues(int CountriesIn, int LengthIn, int WidthIn, int TurnOfPlayerIn)
+        public void SetAllValues(int CountriesIn, int LengthIn, int WidthIn, Player ActualPlayerIn)
         {
             NumberOfCountries = CountriesIn;
             Height = LengthIn;
             Width = WidthIn;
-            TurnOfPlayer = TurnOfPlayerIn;
+            ActualPlayer = ActualPlayerIn;
         }
 
         /// <summary>
@@ -225,9 +224,9 @@ namespace Risiko
         /// </summary>
         /// <param name="TurnOfPlayerIn"></param>
         /// <param name="NumberOfPlayersIn"></param>
-        public void SetPlayersOnly(int TurnOfPlayerIn, Player[] PlayersIn)
+        public void SetPlayersOnly(Player ActualPlayerIn, Player[] PlayersIn)
         {
-            TurnOfPlayer = TurnOfPlayerIn;
+            ActualPlayer = ActualPlayerIn;
             Players = PlayersIn;
         }
 
@@ -241,7 +240,7 @@ namespace Risiko
         /// </summary>
         /// <param name="Index"></param>
         /// <returns></returns>
-        public Country GiveCountryToDraw(int Index)
+        public Country GiveCountry(int Index)
         {
             return Countries[Index];
         }
@@ -282,7 +281,7 @@ namespace Risiko
         public void SpreadCountriesToPlayers()
         {
             Random rnd = new Random();
-            // Speicher temporär die Anzahl der Länder die der Spieler
+            // Speichert temporär die Anzahl der Länder die der Spieler
             // bereits besitzt
             int[] CounterOfCountries = new int[players.Length];
 
@@ -301,7 +300,7 @@ namespace Risiko
             // Zufallsvariable
             int tempRnd;
 
-            // Gibt zufällig manchen Spielern mehr Länder (die die zu viel waren)
+            // Gibt zufällig manchen Spielern mehr Länder (die die zu viel waren) TODO: verdoppelte erhöhung Anzahl möglich
             while (CountriesLeft > 0)
             {
                 tempRnd = (int) rnd.NextDouble() * players.Length;
@@ -318,7 +317,7 @@ namespace Risiko
                 tempRnd = (int) (rnd.NextDouble() * players.Length);
                 if (CounterOfCountries[tempRnd] > 0)
                 {
-                    countries[i].owner = tempRnd;
+                    countries[i].owner = Players[tempRnd];
                     CounterOfCountries[tempRnd]--;
                 }
                 else
@@ -327,7 +326,7 @@ namespace Risiko
             }
             for (int i = 0;i < countries.Length;++i)
             {
-                countries[i].colorOfCountry = players[countries[i].owner].playerColor;
+                countries[i].colorOfCountry = actualPlayer.playerColor;
             }
         }
 
@@ -343,7 +342,7 @@ namespace Risiko
         public void LoadCountriesFromDBSource()
         {
             // Source einbinden
-            DataSourceString = System.Environment.CurrentDirectory + "\\Risiko_Weltkarte1.accdb";
+            //DataSourceString = System.Environment.CurrentDirectory + "\\Risiko_Weltkarte1.accdb";
             con.ConnectionString = "Provider=Microsoft.ACE.OLEDB.12.0;" +
                                    "Data Source=" + DataSourceString;
 
@@ -481,83 +480,75 @@ namespace Risiko
         }
 
 
+
+        /// <summary>
+        /// Methode die beim Attackieren eines Landes aufgerufen wird
+        /// </summary>
+        /// <param name="Attacker"></param>
+        /// <param name="Defender"></param>
+        /// <param name="NumberOfAttackers"></param>
+        /// <param name="NumberOfDefenders"></param>
         public void AttackCountry(ref Country Attacker,ref Country Defender,ref int NumberOfAttackers, ref int NumberOfDefenders)
         {
-            // 1:1 Angreifer:Verteidiger
-            if (NumberOfAttackers == 1 & NumberOfDefenders == 1)
+            // TODO: Different Difficulties, nur beim würfeln benötigt
+            // NumberOfDefenders wird auf -1 gesetzt wenn Land übernommen wurde
+            int[] AttackerNbr = new int[NumberOfAttackers];
+            for (int i = 0;NumberOfAttackers > i;++i)
             {
-                // Verteidiger gewinnt
-                if (ThrowDices() >= ThrowDices())
+                AttackerNbr[i] = ThrowDices(0);
+            }
+            AttackerNbr = SortArray(AttackerNbr);
+
+            int[] DefenderNbr = new int[NumberOfDefenders];
+            for (int i = 0;i < NumberOfDefenders;++i)
+            {
+                DefenderNbr[i] = ThrowDices(0);
+            }
+            DefenderNbr = SortArray(DefenderNbr);
+
+
+            int AttackerLoss = 0, DefenderLoss = 0;
+
+            // Normalfall: mehr oder gleich viel Angreifer als Verteidiger
+            if (NumberOfAttackers >= NumberOfDefenders)
+            {
+                for (int i = 0;i < NumberOfDefenders;++i)
                 {
-                    NumberOfAttackers = 0;
-                    Attacker.unitsStationed--;
+                    if (AttackerNbr[i] > DefenderNbr[i])
+                        DefenderLoss++;
+                    else
+                        AttackerLoss++;
                 }
-                // Angreifer gewinnt
-                else
+            }
+            // Sonderfall
+            else
+            {
+                for (int i = 0; i < NumberOfAttackers; ++i)
                 {
-                    Defender.unitsStationed--;
-                    //falls keine Verteidiger mehr übrig
-                    if (Defender.unitsStationed == 0)
-                    {
-                        Defender.owner = Attacker.owner;
-                        Defender.unitsStationed = NumberOfAttackers;
-                        Defender.colorOfCountry = Players[Attacker.owner].playerColor;
-                    }
+                    if (AttackerNbr[i] > DefenderNbr[i])
+                        DefenderLoss++;
+                    else
+                        AttackerLoss++;
                 }
             }
 
-            // 1:2
-            else if (NumberOfAttackers == 1 & NumberOfDefenders >= 2)
-            {
-                // VerteidigerWurf festlegen, nur 1 da nur einer zählt
-                int DefendNumber = 0;
-                int temp1 = ThrowDices();
-                int temp2 = ThrowDices();
-                if (temp2 > temp1)
-                    DefendNumber = temp2;
-                else
-                {
-                    DefendNumber = temp1;
-                }
+            Attacker.unitsStationed -= AttackerLoss;
+            NumberOfAttackers -= AttackerLoss;
+            Defender.unitsStationed -= DefenderLoss;
+            NumberOfDefenders -= DefenderLoss;
 
-                // Verteidiger gewinnt
-                if (DefendNumber >= ThrowDices())
-                {
-                    NumberOfAttackers = 0;
-                    Attacker.unitsStationed--;
-                }
-                else
-                {
-                    Defender.unitsStationed--;
-                }
-            }
-            else if (NumberOfAttackers == 2)
+            //nochmal angreifen, letzter mann wird von Main geregelt
+            if(NumberOfAttackers > 0 && NumberOfDefenders > 0)
+                AttackCountry(ref Attacker,ref Defender,ref NumberOfAttackers,ref NumberOfDefenders);
+            if (NumberOfDefenders == 0)
             {
-                // Würfeln Angreifer, und höheren Wert auf AN1 setzen
-                int AttackNumber1 = ThrowDices();
-                int AttackNumber2 = ThrowDices();
-                if (AttackNumber2 > AttackNumber1)
-                {
-                    int temp = AttackNumber1;
-                    AttackNumber1 = AttackNumber2;
-                    AttackNumber2 = temp;
-                }
-                // Würfeln Verteidiger, und höheren Wert auf DN1 setzen
-                int DefendNumber1 = ThrowDices();
-                int DefendNumber2 = ThrowDices();
-                if (DefendNumber2 > DefendNumber1)
-                {
-                    int temp = DefendNumber1;
-                    DefendNumber1 = DefendNumber2;
-                    DefendNumber2 = temp;
-                }
+                NumberOfDefenders = -1;
+                Defender.owner = Attacker.owner;
+                Defender.unitsStationed = NumberOfAttackers;
+                Attacker.unitsStationed -= NumberOfAttackers;
+                Defender.colorOfCountry = Attacker.colorOfCountry;
+            }
 
-                // Auswerten
-            }
-            else if (NumberOfAttackers >= 3)
-            {
-                
-            }
         }
 
 
@@ -567,10 +558,41 @@ namespace Risiko
         /// Würfelt und gibt Augenzahl zurück
         /// </summary>
         /// <returns></returns>
-        private int ThrowDices()
+        private int ThrowDices(int Difficulty)
         {
-            int Number = (int) (rnd.NextDouble()*5) + 1;
-            return Number;
+            // TODO: Different Difficulties
+            if (Difficulty == 0)
+            {
+                int Number = (int)(rnd.NextDouble() * 5) + 1;
+                return Number;
+            }
+            return 0;
+        }
+
+
+        /// <summary>
+        /// Sortiert Array
+        /// </summary>
+        /// <param name="Array"></param>
+        /// <returns></returns>
+        private int[] SortArray(int[] Array)
+        {
+            int[] a = Array;
+            int x, i, j;
+            for (i = a.Length - 2;i > 0;i--)
+            {
+                for (j = 0;j <= i;j++)
+                {
+                    if (a[j + 1] > a[j])
+                    {
+                        x = a[j]; 
+                        a[j] = a[j + 1];
+                        a[j + 1] = x;
+                    }
+                }   
+            }
+
+            return a;
         }
     }
 }

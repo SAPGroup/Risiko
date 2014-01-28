@@ -1,6 +1,6 @@
 ﻿namespace Risiko
 {
-    partial class Form2
+    partial class RisikoNewGame
     {
         /// <summary>
         /// Required designer variable.

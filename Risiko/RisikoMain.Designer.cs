@@ -1,6 +1,6 @@
 ﻿namespace Risiko
 {
-    partial class Form1
+    partial class RisikoMain
     {
         /// <summary>
         /// Required designer variable.
@@ -88,14 +88,14 @@
             // kartenDateiToolStripMenuItem
             // 
             this.kartenDateiToolStripMenuItem.Name = "kartenDateiToolStripMenuItem";
-            this.kartenDateiToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.kartenDateiToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.kartenDateiToolStripMenuItem.Text = "Datei öffnen...";
             this.kartenDateiToolStripMenuItem.Click += new System.EventHandler(this.kartenDateiToolStripMenuItem_Click);
             // 
             // neuesSpieToolStripMenuItem
             // 
             this.neuesSpieToolStripMenuItem.Name = "neuesSpieToolStripMenuItem";
-            this.neuesSpieToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.neuesSpieToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.neuesSpieToolStripMenuItem.Text = "Neues Spiel";
             this.neuesSpieToolStripMenuItem.Click += new System.EventHandler(this.neuesSpieToolStripMenuItem_Click);
             // 
@@ -110,8 +110,8 @@
             this.ansichtToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.autoLanderkennungAktivierenToolStripMenuItem});
             this.ansichtToolStripMenuItem.Name = "ansichtToolStripMenuItem";
-            this.ansichtToolStripMenuItem.Size = new System.Drawing.Size(59, 20);
-            this.ansichtToolStripMenuItem.Text = "Ansicht";
+            this.ansichtToolStripMenuItem.Size = new System.Drawing.Size(90, 20);
+            this.ansichtToolStripMenuItem.Text = "Einstellungen";
             // 
             // autoLanderkennungAktivierenToolStripMenuItem
             // 
@@ -131,6 +131,7 @@
             this.pnlMap.Name = "pnlMap";
             this.pnlMap.Size = new System.Drawing.Size(872, 542);
             this.pnlMap.TabIndex = 5;
+            this.pnlMap.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlMap_Paint);
             this.pnlMap.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pnlMap_MouseMove);
             this.pnlMap.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pnlMap_MouseUp);
             // 
@@ -152,7 +153,7 @@
             this.progBMenLeft.Size = new System.Drawing.Size(268, 12);
             this.progBMenLeft.TabIndex = 0;
             // 
-            // Form1
+            // RisikoMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -166,7 +167,7 @@
             this.DoubleBuffered = true;
             this.ForeColor = System.Drawing.Color.Black;
             this.MainMenuStrip = this.menuSMain;
-            this.Name = "Form1";
+            this.Name = "RisikoMain";
             this.Text = "Risiko";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResizeEnd += new System.EventHandler(this.ResizeForm);
