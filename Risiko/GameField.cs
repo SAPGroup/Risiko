@@ -65,8 +65,9 @@ namespace Risiko
         private Player ActualPlayer = null;
 
         /// <summary>
-        /// Aktueller Status, 0 Setzen der Spieler
-        /// 1 angreifen, 2 ziehen
+        /// Aktueller Status, 0 Setzen der Spieler am Anfang des Spiels
+        /// 1 setzen vor jeder Runde der Spieler
+        /// 2 angreifen, 3 ziehen
         /// </summary>
         private int GameState = -1;
 
@@ -300,7 +301,7 @@ namespace Risiko
             // Zufallsvariable
             int tempRnd;
 
-            // Gibt zufällig manchen Spielern mehr Länder (die die zu viel waren) TODO: verdoppelte erhöhung Anzahl möglich
+            // Gibt zufällig manchen Spielern mehr Länder (die die zu viel waren)
             while (CountriesLeft > 0)
             {
                 tempRnd = (int) rnd.NextDouble() * players.Length;
@@ -317,17 +318,31 @@ namespace Risiko
                 tempRnd = (int) (rnd.NextDouble() * players.Length);
                 if (CounterOfCountries[tempRnd] > 0)
                 {
+                    // Country- Besitzer festlegen
                     countries[i].owner = Players[tempRnd];
+                    // Anzahl der Länder für neuen Besitzer die noch zu vergeben sind verringern
                     CounterOfCountries[tempRnd]--;
+                    // 1 Einheit in Land setzen
+                    countries[i].unitsStationed = 1;
+                    // 1 Einheit bei Spieler abziehen
+                    Players[tempRnd].unitsPT--;
                 }
                 else
                     --i;
                 // damit land sicher vergeben wird
             }
+
+            // Farbe des Spielers in Land übernehmen
             for (int i = 0;i < countries.Length;++i)
             {
-                countries[i].colorOfCountry = actualPlayer.playerColor;
+                countries[i].colorOfCountry = countries[i].owner.playerColor;
             }
+
+            // Besitz der Länder in ownedCountries der Spieler speichern, (2seitige Beziehung) TODO: unnötig?
+            //for (int i = 0;i < countries.Length;++i)
+            //{
+            //    players[GetPlayerIndex(countries[i].owner.name)].AddOwnedCountry(countries[i]);
+            //}
         }
 
 
@@ -593,6 +608,40 @@ namespace Risiko
             }
 
             return a;
+        }
+
+
+        /// <summary>
+        /// Liefert Index aus Players[] des Spielers mit NameIn zurück
+        /// </summary>
+        /// <param name="NameIn"></param>
+        /// <returns></returns>
+        private int GetPlayerIndex(string NameIn)
+        {
+            for (int i = 0;i < Players.Length;++i)
+            {
+                if (Players[i].name == NameIn)
+                    return i;
+            }
+            // error
+            return -1;
+        }
+
+
+        /// <summary>
+        /// Gibt Index eines Landes in OwnedCountries eines Spielers aus
+        /// </summary>
+        /// <param name="CountryNameIn"></param>
+        /// <param name="PlayerIn"></param>
+        /// <returns></returns>
+        public int GetIndexOfCountryInOwnedCountries(string CountryNameIn, Player PlayerIn)
+        {
+            for (int i = 0;i < PlayerIn.ownedCountries.Length;++i)
+            {
+                if (PlayerIn.ownedCountries[i].name == CountryNameIn)
+                    return i;
+            }
+            return -1;
         }
     }
 }

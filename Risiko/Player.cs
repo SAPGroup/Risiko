@@ -38,7 +38,14 @@ namespace Risiko
         /// <summary>
         /// Farbe des Spielers
         /// </summary>
-        private Color PlayerColor; 
+        private Color PlayerColor;
+
+        /// <summary>
+        /// Speichert die Anzahl der Männer die der Spieler bei Angriff pro
+        /// Würfelrunde stellt
+        /// 1 oder 2
+        /// </summary>
+        private int NumberOfDefenders;
 
 
         // Konstruktoren
@@ -114,12 +121,17 @@ namespace Risiko
         }
 
         /// <summary>
-        /// Set- und Get- Methode der Einehiten pro Runde
+        /// Set- und Get- Methode der Einehiten pro Runde, 
+        /// minimal 3 Männer pro Runde
         /// </summary>
         public int unitsPT
         {
             get { return UnitsPT; }
-            set { UnitsPT = value; }
+            set
+            {
+                if(value >=3)
+                    UnitsPT = value;
+            }
         }
 
         /// <summary>
@@ -130,6 +142,20 @@ namespace Risiko
             get { return PlayerColor; }
             set { PlayerColor = value; }
         }
+
+        /// <summary>
+        /// Set und Get der Anzahl der Verteidiger
+        /// </summary>
+        public int numberOfDefenders
+        {
+            get { return NumberOfDefenders; }
+            set
+            {
+                if (value == 1 | value == 2)
+                    NumberOfDefenders = value;
+            }
+        }
+
 
 
         public void SetAllValues(string NameIn, Country[] OwnedCountriesIn, int[] UnitsInCountriesIn)
@@ -147,15 +173,28 @@ namespace Risiko
         {
             if (ownedCountries != null)
             {
-                Country[] newOwnedCountries = new Country[ownedCountries.Length];
+                Country[] newOwnedCountries = new Country[ownedCountries.Length + 1];
                 for (int i = 0;i < ownedCountries.Length;++i)
                 {
                     newOwnedCountries[i] = ownedCountries[i];
                 }
-                newOwnedCountries[ownedCountries.Length + 1] = CountryIn;
+                newOwnedCountries[ownedCountries.Length] = CountryIn;
 
                 ownedCountries = newOwnedCountries;
-            } 
+            }
+            else
+            {
+                ownedCountries = new Country[1];
+                ownedCountries[0] = CountryIn;
+            }
+        }
+
+
+
+        public int GetCountryIndex(string CountryName)
+        {
+
+            return 0;
         }
     }
 }

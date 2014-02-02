@@ -26,10 +26,10 @@ namespace Risiko
             InitializeComponent();
         }
 
-        public RisikoNewGame(RisikoMain aufrufer)
+        public RisikoNewGame(RisikoMain Caller)
         {
-            fh = aufrufer;
-            tempGame = aufrufer.GetGame();
+            fh = Caller;
+            tempGame = Caller.GetGame();
             InitializeComponent();
         }
 

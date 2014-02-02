@@ -42,8 +42,15 @@ namespace Risiko
         //Flag die festlegt ob Karte neu gezeichnet werden soll, obwohl keine Änderung im Factor vorhanden ist
         //noch benötigt?? - ja -> DrawMapWoLoad
         private bool DrawFlag = false;
-        // temporärer Index des zuletzt angklickten Landes
+        // temporärer Index des zuletzt überfahrenen Landes
         private int tempIndex = -1;
+        // Index des zuletzt angeklickten Landes, bei Angreifen und Ziehen (game.gamestate 2 und 3) wichtig
+        private int tempClickedIndex = -1;
+
+        // Array der die Anzahl der Einheiten die der Spieler setzen möchte speichert
+        // in die Länder in seinem Besitz
+        private int[] UnitsToAdd;
+        private bool StartUnitAdding = false;
 
         
         public RisikoMain()
@@ -70,7 +77,7 @@ namespace Risiko
 
 
         /// <summary>
-        /// Set- und Get- von Game, für Form2
+        /// Set- und Get- von Game, für andere Forms
         /// </summary>
         /// <returns></returns>
         public GameField GetGame()
@@ -246,30 +253,81 @@ namespace Risiko
 
             //int temp = checkClickOnPolygon(clickedPosition);
             int temp = CheckClickInPolygon(clickedPosition);
+            // Rechtsklick
             if (e.Button == MouseButtons.Right)
             {
                 if (temp != -1)
                 {
-                    // TODO: Einheiten zurücknehmen
+                    if (StartUnitAdding & Game.countries[temp].owner == Game.actualPlayer & (Game.gameState == 1 | Game.gameState == 0))
+                    {
+                        int tempUTAArray = Game.GetIndexOfCountryInOwnedCountries(Game.countries[temp].name, Game.actualPlayer);
+                        if (UnitsToAdd[tempUTAArray] > 0)
+                        {
+                            UnitsToAdd[tempUTAArray]--;
+                            Game.actualPlayer.unitsPT++;
+                            Game.countries[temp].unitsStationed--;
+
+                            // für pBar
+                            progBMenLeft.Value = Game.actualPlayer.unitsPT;
+                            DrawMiddleCircle(temp);
+                        }
+                    }
+                    else // keine Bedingung?
+                    {
+                        tempClickedIndex = -1;
+                    }
                 }
             }
+            // Linksklick
             else if(e.Button == MouseButtons.Left)
             {
                 if (temp != -1)
                 {
-                    // TODO: wenn noch keine Spieler, sonst null error
-                    if (Game.actualPlayer != null & Game.gameState == 0 & Game.actualPlayer.unitsPT > 0)
+                    // Setzen der Einheiten (entweder Spielanfang oder Spielende
+                    if (Game.gameState == 1 | Game.gameState == 0)
                     {
-                        Game.countries[temp].owner = Game.actualPlayer;
-                        Game.actualPlayer.unitsPT--;
-                        Game.countries[temp].unitsStationed++;
+                        if (StartUnitAdding == false)
+                        {
+                            UnitsToAdd = new int[Game.actualPlayer.ownedCountries.Length];
+                            for (int i = 0; i < UnitsToAdd.Length; ++i)
+                                UnitsToAdd[i] = 0;
+                            StartUnitAdding = true;
+                        }
 
-                        // für pBar
-                        progBMenLeft.Value = Game.actualPlayer.unitsPT;
-                        DrawMiddleCircle(temp);
+                        // TODO: wenn noch keine Spieler, sonst null error
+                        if (Game.actualPlayer != null & (Game.gameState == 0 | Game.gameState == 1) & Game.actualPlayer.unitsPT > 0 & Game.countries[temp].owner == Game.actualPlayer)
+                        {
+                            //falsch
+                            //Game.countries[temp].owner = Game.actualPlayer;
+
+                            Game.actualPlayer.unitsPT--;
+                            Game.countries[temp].unitsStationed++;
+                            UnitsToAdd[Game.GetIndexOfCountryInOwnedCountries(Game.countries[temp].name, Game.actualPlayer)]++;
+
+                            // für pBar
+                            progBMenLeft.Value = Game.actualPlayer.unitsPT;
+                            DrawMiddleCircle(temp);
+
+
+                        }
+                        // Temp und momentan störend
+                        //MessageBox.Show(Game.countries[temp].name);
                     }
-                    // Temp und momentan störend
-                    //MessageBox.Show(Game.countries[temp].name);
+                    // Angreifen
+                    else if (Game.gameState == 2)
+                    {
+                        // zuvor kein Land ausgewählt
+                        if (tempClickedIndex == -1 & Game.countries[temp].owner == Game.actualPlayer)
+                        {
+                            tempClickedIndex = temp;
+                        }
+                        else if (tempClickedIndex != -1 & Game.countries[temp].owner != Game.actualPlayer)
+                        {
+                            // TODO: Form:AttackCountry
+                            RisikoAttackCountry Attack = new RisikoAttackCountry(this, tempClickedIndex,temp);
+                            Attack.ShowDialog();
+                        }
+                    }
                 }
             }
         }
@@ -402,13 +460,21 @@ namespace Risiko
             // Auslesen und vergeben der Länder
             Game.LoadCountriesFromDBSource();
             Game.SpreadCountriesToPlayers();
+            DrawMapWoLoad();
 
             // eigentlich temp, später vlt mehr anzeigen+
             // gibt Spieler der aktuell am Zug ist aus
             lblMessage.Text = Convert.ToString(Game.actualPlayer.name);
-            // vlt temp
+            // ProgressBar auf richtige Werte setzen
             progBMenLeft.Maximum = Game.actualPlayer.unitsPT;
             progBMenLeft.Value = Game.actualPlayer.unitsPT;
+
+            // damit Spielerfarbe der länder beim Zeichnen dann sicher erhalten bleibt
+            // und nicht neu geladen wird
+            DrawnMap = true;
+
+            // damit beim Klicken auf die Karte erst Array der ownedcountries erzeugt wird
+            StartUnitAdding = false;
         }
       
 
@@ -507,9 +573,17 @@ namespace Risiko
                     DrawMiddleCircle(i);
                 DrawNeighbours();
 
-                // später wahrscheinlich benötigt
-                if (Game.players != null)
+                // Nur-Setz-Runde der Spieler,(erste Runde)
+                if (Game.players != null & Game.gameState== 0)
                 {
+                    if (Game.actualPlayer.unitsPT != 0)
+                    {
+                        MessageBox.Show("Sie haben noch Einheiten zu verteilen, bevor Sie ihren Zug beenden können.");
+                        return;
+                    }
+
+
+                    // gibt aktuellen Index des aktuellen Spielers in Players-Array zurück
                     int tempActualIndex = -1;
                     for (int i = 0;i < Game.players.Length;++i)
                     {
@@ -519,15 +593,42 @@ namespace Risiko
                             break;
                         }    
                     }
+                    // Speichert aktuellen Spieler zurück in Array ab 
                     Game.players[tempActualIndex] = Game.actualPlayer;
 
+                    // erhöht Nächster Spieler, falls index zu hoch, wieder erster Spieler an der Reihe
                     if (++tempActualIndex >= Game.players.Length)
+                    {
                         tempActualIndex -= Game.players.Length;
-
+                        Game.gameState = 1;
+                    }
+                        
+                    // Liest neuen aktuellen Spieler aus
                     Game.actualPlayer = Game.players[tempActualIndex];
+                    // Um Array bei Klick neu zu belegen
+                    StartUnitAdding = false;
+
+                    // ProgressBar auf richtige Werte setzen
+                    progBMenLeft.Maximum = Game.actualPlayer.unitsPT;
+                    progBMenLeft.Value = Game.actualPlayer.unitsPT;
+
+                    lblMessage.Text = Convert.ToString(Game.actualPlayer.name) + " am Zug.";
+                }
+                // "normale" Setz-Runden der Spieler
+                else if (Game.players != null & Game.gameState == 1)
+                {
+                    if (Game.actualPlayer.unitsPT != 0)
+                    {
+                        MessageBox.Show("Sie haben noch Einheiten zu verteilen, bevor Sie ihren Zug forsetzen können.");
+                        return;
+                    }
+                    // Damit UnitsToAdd array beim nächsten Setzen neu gesetzt wird
+                    StartUnitAdding = false;
                     
-                    lblMessage.Text = Convert.ToString(Game.actualPlayer.name);
-                }       
+                    Game.gameState = 2;
+
+                    //TODO: Abfrage ob sicher? oder nervig? als Einstellung? 
+                }
             }     
         }
 
@@ -664,21 +765,50 @@ namespace Risiko
 
         }
 
+        private void btnTestBtn_Click(object sender, EventArgs e)
+        {
+            Player[] PlayersStart = new Player[2];
+
+            PlayersStart[0] = new Player("Peter", false, Color.Green);
+            PlayersStart[0].unitsPT = 20;
+            PlayersStart[1] = new Player("Hans", false, Color.Red);
+            PlayersStart[1].unitsPT = 20;
+
+            // Werte werden in GameField übernommen
+            Game.players = PlayersStart;
+            Game.actualPlayer = PlayersStart[0];
+            Game.gameState = 0;
+
+            Game.actualPlayer.name = "Klaus";
+
+            
+
+            // Auslesen und vergeben der Länder
+            Game.LoadCountriesFromDBSource();
+            Game.SpreadCountriesToPlayers();
+            DrawMapWoLoad();
+
+            // eigentlich temp, später vlt mehr anzeigen+
+            // gibt Spieler der aktuell am Zug ist aus
+            lblMessage.Text = Convert.ToString(Game.actualPlayer.name);
+            // ProgressBar auf richtige Werte setzen
+            progBMenLeft.Maximum = Game.actualPlayer.unitsPT;
+            progBMenLeft.Value = Game.actualPlayer.unitsPT;
+
+            // damit Spielerfarbe der länder beim Zeichnen dann sicher erhalten bleibt
+            // und nicht neu geladen wird
+            DrawnMap = true;
 
 
+            //int temp = Game.players[0].ownedCountries[0].unitsStationed;
+            //Game.players[0].ownedCountries[0].unitsStationed = 50;
+            //int temp2 = Game.countries[0].unitsStationed;
+            //int temp3 = Game.countries[1].unitsStationed;
+            //int temp4 = Game.countries[2].unitsStationed;
+            //int temp5 = Game.countries[3].unitsStationed;
+            //int temp6 = Game.countries[4].unitsStationed;
+            //int temp7 = Game.countries[5].unitsStationed;
+        }
 
-        // OLD, wird vermutlich nicht benötigt werden
-        /// <summary>
-        /// "Löscht" die Karte, bisher nicht benötigt
-        /// </summary>
-        //private void RubberMap()
-        //{
-        //    z_asBitmap = new Bitmap(pnlMap.Width, pnlMap.Height);
-        //    z = Graphics.FromImage(z_asBitmap);
-
-        //    z.FillRectangle(rubber, 0, 0, pnlMap.Width, pnlMap.Height);
-
-        //    pnlMap.BackgroundImage = z_asBitmap;
-        //}
     }
 }

@@ -40,6 +40,7 @@
             this.pnlMap = new System.Windows.Forms.Panel();
             this.btnEndTurn = new System.Windows.Forms.Button();
             this.progBMenLeft = new System.Windows.Forms.ProgressBar();
+            this.btnTestBtn = new System.Windows.Forms.Button();
             this.menuSMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -88,14 +89,14 @@
             // kartenDateiToolStripMenuItem
             // 
             this.kartenDateiToolStripMenuItem.Name = "kartenDateiToolStripMenuItem";
-            this.kartenDateiToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.kartenDateiToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.kartenDateiToolStripMenuItem.Text = "Datei öffnen...";
             this.kartenDateiToolStripMenuItem.Click += new System.EventHandler(this.kartenDateiToolStripMenuItem_Click);
             // 
             // neuesSpieToolStripMenuItem
             // 
             this.neuesSpieToolStripMenuItem.Name = "neuesSpieToolStripMenuItem";
-            this.neuesSpieToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.neuesSpieToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.neuesSpieToolStripMenuItem.Text = "Neues Spiel";
             this.neuesSpieToolStripMenuItem.Click += new System.EventHandler(this.neuesSpieToolStripMenuItem_Click);
             // 
@@ -153,11 +154,22 @@
             this.progBMenLeft.Size = new System.Drawing.Size(268, 12);
             this.progBMenLeft.TabIndex = 0;
             // 
+            // btnTestBtn
+            // 
+            this.btnTestBtn.Location = new System.Drawing.Point(697, 582);
+            this.btnTestBtn.Name = "btnTestBtn";
+            this.btnTestBtn.Size = new System.Drawing.Size(75, 23);
+            this.btnTestBtn.TabIndex = 7;
+            this.btnTestBtn.Text = "Test";
+            this.btnTestBtn.UseVisualStyleBackColor = true;
+            this.btnTestBtn.Click += new System.EventHandler(this.btnTestBtn_Click);
+            // 
             // RisikoMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(896, 617);
+            this.Controls.Add(this.btnTestBtn);
             this.Controls.Add(this.progBMenLeft);
             this.Controls.Add(this.btnEndTurn);
             this.Controls.Add(this.pnlMap);
@@ -194,6 +206,7 @@
         private System.Windows.Forms.ToolStripMenuItem neuesSpieToolStripMenuItem;
         private System.Windows.Forms.Button btnEndTurn;
         private System.Windows.Forms.ProgressBar progBMenLeft;
+        private System.Windows.Forms.Button btnTestBtn;
     }
 }
 
