@@ -36,7 +36,7 @@ namespace Risiko
         /// 
         /// TODO: Durch Datei öfnnen verändern (neues Spiel -> Quelldatei auswählen usw)
         /// </summary>
-        private string DataSourceString = System.Environment.CurrentDirectory + "\\Risiko_Weltkarte1.accdb";
+        private string DataSourceString = System.Environment.CurrentDirectory + "\\Risiko_Weltkarte2.accdb";
 
         /// <summary>
         /// Daten von Gamefield, Anzahl der Läbder, Höhe und Breite
@@ -339,10 +339,10 @@ namespace Risiko
             }
 
             // Besitz der Länder in ownedCountries der Spieler speichern, (2seitige Beziehung) TODO: unnötig?
-            //for (int i = 0;i < countries.Length;++i)
-            //{
-            //    players[GetPlayerIndex(countries[i].owner.name)].AddOwnedCountry(countries[i]);
-            //}
+            for (int i = 0; i < countries.Length; ++i)
+            {
+                players[GetPlayerIndex(countries[i].owner.name)].AddOwnedCountry(countries[i]);
+            }
         }
 
 
@@ -503,7 +503,7 @@ namespace Risiko
         /// <param name="Defender"></param>
         /// <param name="NumberOfAttackers"></param>
         /// <param name="NumberOfDefenders"></param>
-        public void AttackCountry(ref Country Attacker,ref Country Defender,ref int NumberOfAttackers, ref int NumberOfDefenders)
+        public void AttackCountry(ref Country Attacker,ref Country Defender,ref int NumberOfAttackers, int NumberOfDefenders)
         {
             // TODO: Different Difficulties, nur beim würfeln benötigt
             // NumberOfDefenders wird auf -1 gesetzt wenn Land übernommen wurde
@@ -550,11 +550,11 @@ namespace Risiko
             Attacker.unitsStationed -= AttackerLoss;
             NumberOfAttackers -= AttackerLoss;
             Defender.unitsStationed -= DefenderLoss;
-            NumberOfDefenders -= DefenderLoss;
+            //NumberOfDefenders -= DefenderLoss;
 
             //nochmal angreifen, letzter mann wird von Main geregelt
             if(NumberOfAttackers > 0 && NumberOfDefenders > 0)
-                AttackCountry(ref Attacker,ref Defender,ref NumberOfAttackers,ref NumberOfDefenders);
+                AttackCountry(ref Attacker,ref Defender,ref NumberOfAttackers, NumberOfDefenders);
             if (NumberOfDefenders == 0)
             {
                 NumberOfDefenders = -1;
@@ -586,7 +586,7 @@ namespace Risiko
 
 
         /// <summary>
-        /// Sortiert Array
+        /// Sortiert Array, höchste zuletzt
         /// </summary>
         /// <param name="Array"></param>
         /// <returns></returns>
@@ -643,5 +643,62 @@ namespace Risiko
             }
             return -1;
         }
+
+
+        /// <summary>
+        /// Gibt zurück ob Länder mit Index1 und 2 Nachbarländer sind
+        /// </summary>
+        /// <param name="IndexCountry1"></param>
+        /// <param name="IndexCountry2"></param>
+        /// <returns></returns>
+        public bool CountriesAreNeighbours(int IndexCountry1, int IndexCountry2)
+        {
+            string Country2Name = countries[IndexCountry2].name;
+            for (int i = 0;i < Countries[IndexCountry1].neighbouringCountries.Length;++i)
+            {
+                if (Countries[IndexCountry1].neighbouringCountries[i] == Country2Name)
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Liefert Index eines landes zurück
+        /// </summary>
+        /// <param name="CountryNameIn"></param>
+        /// <returns></returns>
+        public int GetCountryIndex(string CountryNameIn)
+        {
+            for (int i = 0;i < countries.Length;++i)
+            {
+                if (countries[i].name == CountryNameIn)
+                    return i;
+            }
+            return -1;
+        }
+
+
+        // ToAdd Methoden, (Überladungen)
+        /// <summary>
+        /// Fügt ToAdd an letzter Stelle des Arrays ArrayIn ein
+        /// </summary>
+        /// <param name="ArrayIn"></param>
+        /// <param name="ToAdd"></param>
+        public string[] AddToArray(string[] ArrayIn, string ToAdd)
+        {
+            string[] OutBuff = new string[ArrayIn.Length+1];
+            for (int i = 0;i < ArrayIn.Length;++i)
+                OutBuff[i] = ArrayIn[i];
+            OutBuff[ArrayIn.Length] = ToAdd;
+            return OutBuff;
+        }
+        public int[] AddToArray(int[] ArrayIn, int ToAdd)
+        {
+            int[] OutBuff = new int[ArrayIn.Length + 1];
+            for (int i = 0; i < ArrayIn.Length; ++i)
+                OutBuff[i] = ArrayIn[i];
+            OutBuff[ArrayIn.Length] = ToAdd;
+            return OutBuff;
+        } 
     }
 }

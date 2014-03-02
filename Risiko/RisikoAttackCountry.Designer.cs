@@ -39,6 +39,7 @@
             this.lblDescNumberDefenders = new System.Windows.Forms.Label();
             this.tBAttackerName = new System.Windows.Forms.TextBox();
             this.tBDefenderName = new System.Windows.Forms.TextBox();
+            this.cBTillDeath = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.numUDAttacker)).BeginInit();
             this.pnlNumberOfDefenders.SuspendLayout();
             this.SuspendLayout();
@@ -110,13 +111,14 @@
             // rB1Def
             // 
             this.rB1Def.AutoSize = true;
-            this.rB1Def.Location = new System.Drawing.Point(3, 5);
+            this.rB1Def.Location = new System.Drawing.Point(3, 3);
             this.rB1Def.Name = "rB1Def";
             this.rB1Def.Size = new System.Drawing.Size(84, 17);
             this.rB1Def.TabIndex = 0;
             this.rB1Def.TabStop = true;
             this.rB1Def.Text = "1 Verteidiger";
             this.rB1Def.UseVisualStyleBackColor = true;
+            this.rB1Def.CheckedChanged += new System.EventHandler(this.rB1Def_CheckedChanged);
             // 
             // lblDescNumberDefenders
             // 
@@ -131,21 +133,32 @@
             // 
             this.tBAttackerName.Location = new System.Drawing.Point(78, 9);
             this.tBAttackerName.Name = "tBAttackerName";
-            this.tBAttackerName.Size = new System.Drawing.Size(115, 20);
+            this.tBAttackerName.Size = new System.Drawing.Size(170, 20);
             this.tBAttackerName.TabIndex = 8;
             // 
             // tBDefenderName
             // 
             this.tBDefenderName.Location = new System.Drawing.Point(78, 36);
             this.tBDefenderName.Name = "tBDefenderName";
-            this.tBDefenderName.Size = new System.Drawing.Size(100, 20);
+            this.tBDefenderName.Size = new System.Drawing.Size(170, 20);
             this.tBDefenderName.TabIndex = 9;
+            // 
+            // cBTillDeath
+            // 
+            this.cBTillDeath.AutoSize = true;
+            this.cBTillDeath.Location = new System.Drawing.Point(336, 32);
+            this.cBTillDeath.Name = "cBTillDeath";
+            this.cBTillDeath.Size = new System.Drawing.Size(84, 17);
+            this.cBTillDeath.TabIndex = 10;
+            this.cBTillDeath.Text = "Bis zum Tod";
+            this.cBTillDeath.UseVisualStyleBackColor = true;
             // 
             // RisikoAttackCountry
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(469, 128);
+            this.Controls.Add(this.cBTillDeath);
             this.Controls.Add(this.tBDefenderName);
             this.Controls.Add(this.tBAttackerName);
             this.Controls.Add(this.lblDescNumberDefenders);
@@ -179,5 +192,6 @@
         private System.Windows.Forms.Label lblDescNumberDefenders;
         private System.Windows.Forms.TextBox tBAttackerName;
         private System.Windows.Forms.TextBox tBDefenderName;
+        private System.Windows.Forms.CheckBox cBTillDeath;
     }
 }

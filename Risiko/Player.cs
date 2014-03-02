@@ -86,6 +86,7 @@ namespace Risiko
             Name = NameIn;
             AIPlayer = IsAIPlayer;
             PlayerColor = PlayerColorIn;
+            NumberOfDefenders = 1;
         }
 
         // Set- und Get- Methoden
@@ -129,7 +130,7 @@ namespace Risiko
             get { return UnitsPT; }
             set
             {
-                if(value >=3)
+                if(value >= 0)
                     UnitsPT = value;
             }
         }

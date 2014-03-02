@@ -35,18 +35,25 @@ namespace Risiko
         //um sie später wieder zurück zu setzen
         private Color tempSelCountry = Color.White;
 
+        //Map Zeichnen
         // false, wenn die Karte noch nicht gezeichnet wurde (würde sonst zu Fehlern in CheckClickOnPolygon führen)
         private bool DrawnMap = false;
-
+        // Legt fest ob Map mit den normalen Farben der Spieler gezeichnet werden soll,
+        // oder mit blasseren Farben, um anderen Bedienelementen die Aufmerksamkeit zu widmen
+        private bool DrawPale = false;
         //Bei Klick wichtig!
         //Flag die festlegt ob Karte neu gezeichnet werden soll, obwohl keine Änderung im Factor vorhanden ist
         //noch benötigt?? - ja -> DrawMapWoLoad
         private bool DrawFlag = false;
+
+
+        //Index
         // temporärer Index des zuletzt überfahrenen Landes
         private int tempIndex = -1;
         // Index des zuletzt angeklickten Landes, bei Angreifen und Ziehen (game.gamestate 2 und 3) wichtig
         private int tempClickedIndex = -1;
 
+        //Einheiten
         // Array der die Anzahl der Einheiten die der Spieler setzen möchte speichert
         // in die Länder in seinem Besitz
         private int[] UnitsToAdd;
@@ -248,11 +255,22 @@ namespace Risiko
         /// <param name="e"></param>
         private void pnlMap_MouseUp(object sender, MouseEventArgs e)
         {
+           
+
             //clickedPosition = aktuelle Position der Maus in der PictureBox
             Point clickedPosition = new Point(e.X, e.Y);
 
             //int temp = checkClickOnPolygon(clickedPosition);
             int temp = CheckClickInPolygon(clickedPosition);
+
+            ////TEMP
+            ////löschen, temp um karte zu korrigieren
+            //if (temp != -1)
+            //{
+            //    MessageBox.Show(Game.countries[temp].name);
+            //    //Temp(temp);
+            //}
+
             // Rechtsklick
             if (e.Button == MouseButtons.Right)
             {
@@ -297,9 +315,6 @@ namespace Risiko
                         // TODO: wenn noch keine Spieler, sonst null error
                         if (Game.actualPlayer != null & (Game.gameState == 0 | Game.gameState == 1) & Game.actualPlayer.unitsPT > 0 & Game.countries[temp].owner == Game.actualPlayer)
                         {
-                            //falsch
-                            //Game.countries[temp].owner = Game.actualPlayer;
-
                             Game.actualPlayer.unitsPT--;
                             Game.countries[temp].unitsStationed++;
                             UnitsToAdd[Game.GetIndexOfCountryInOwnedCountries(Game.countries[temp].name, Game.actualPlayer)]++;
@@ -307,8 +322,6 @@ namespace Risiko
                             // für pBar
                             progBMenLeft.Value = Game.actualPlayer.unitsPT;
                             DrawMiddleCircle(temp);
-
-
                         }
                         // Temp und momentan störend
                         //MessageBox.Show(Game.countries[temp].name);
@@ -321,7 +334,7 @@ namespace Risiko
                         {
                             tempClickedIndex = temp;
                         }
-                        else if (tempClickedIndex != -1 & Game.countries[temp].owner != Game.actualPlayer)
+                        else if (tempClickedIndex != -1 & Game.countries[temp].owner != Game.actualPlayer & Game.CountriesAreNeighbours(temp, tempClickedIndex))
                         {
                             // TODO: Form:AttackCountry
                             RisikoAttackCountry Attack = new RisikoAttackCountry(this, tempClickedIndex,temp);
@@ -479,10 +492,6 @@ namespace Risiko
       
 
 
-
-
-
-
         // Sonstiges
         /// <summary>
         /// Liefert den Index des Landes zurück
@@ -600,7 +609,8 @@ namespace Risiko
                     if (++tempActualIndex >= Game.players.Length)
                     {
                         tempActualIndex -= Game.players.Length;
-                        Game.gameState = 1;
+                        if(Game.gameState == 0)
+                            Game.gameState = 2;
                     }
                         
                     // Liest neuen aktuellen Spieler aus
@@ -619,15 +629,13 @@ namespace Risiko
                 {
                     if (Game.actualPlayer.unitsPT != 0)
                     {
-                        MessageBox.Show("Sie haben noch Einheiten zu verteilen, bevor Sie ihren Zug forsetzen können.");
+                        MessageBox.Show("Sie haben noch Einheiten zu verteilen, bevor Sie ihren Zug fortsetzen können.");
                         return;
                     }
                     // Damit UnitsToAdd array beim nächsten Setzen neu gesetzt wird
                     StartUnitAdding = false;
                     
-                    Game.gameState = 2;
-
-                    //TODO: Abfrage ob sicher? oder nervig? als Einstellung? 
+                    Game.gameState = 2; 
                 }
             }     
         }
@@ -769,10 +777,10 @@ namespace Risiko
         {
             Player[] PlayersStart = new Player[2];
 
-            PlayersStart[0] = new Player("Peter", false, Color.Green);
-            PlayersStart[0].unitsPT = 20;
-            PlayersStart[1] = new Player("Hans", false, Color.Red);
-            PlayersStart[1].unitsPT = 20;
+            PlayersStart[0] = new Player("Peter", false, Color.FromArgb(0xEE, 0x2C, 0x2C));
+            PlayersStart[0].unitsPT = 50;
+            PlayersStart[1] = new Player("Hans", false, Color.FromArgb(0x54, 0x8B, 0x54));
+            PlayersStart[1].unitsPT = 50;
 
             // Werte werden in GameField übernommen
             Game.players = PlayersStart;
@@ -800,6 +808,9 @@ namespace Risiko
             DrawnMap = true;
 
 
+            Activations(false);
+            DrawDark();
+
             //int temp = Game.players[0].ownedCountries[0].unitsStationed;
             //Game.players[0].ownedCountries[0].unitsStationed = 50;
             //int temp2 = Game.countries[0].unitsStationed;
@@ -810,5 +821,321 @@ namespace Risiko
             //int temp7 = Game.countries[5].unitsStationed;
         }
 
+        private void ansichtToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void verteidigerBeiAngriffToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (Game.actualPlayer.numberOfDefenders == 1)
+            {
+                Game.actualPlayer.numberOfDefenders = 2;
+                verteidigerBeiAngriffToolStripMenuItem.Text = "2 Verteidiger bei Angriff";
+            }
+            else if (Game.actualPlayer.numberOfDefenders == 2)
+            {
+                Game.actualPlayer.numberOfDefenders = 1;
+                verteidigerBeiAngriffToolStripMenuItem.Text = "1 Verteidiger bei Angriff";
+            }
+        }
+
+        /// <summary>
+        /// Deaktiviert Steuerelemente bei Angriff
+        /// </summary>
+        /// <param name="newSetting"></param>
+        private void Activations(bool newSetting)
+        {
+            if (newSetting == false)
+            {
+                menuSMain.Enabled = false;
+                pnlMap.Enabled = false;
+                btnDrawMap.Enabled = false;
+                btnEndTurn.Enabled = false;
+                progBMenLeft.Enabled = false;
+            }
+            else
+            {
+                menuSMain.Enabled = true;
+                pnlMap.Enabled = true;
+                btnDrawMap.Enabled = true;
+                btnEndTurn.Enabled = true;
+                progBMenLeft.Enabled = true;
+            }
+        }
+
+
+        /// <summary>
+        /// Zeichnet die Karte blasser TODO: in DrawMapWoLoad aufnehmen, abfrage nach DrawPale
+        /// </summary>
+        private void DrawDark()
+        {
+            z_asBitmap = new Bitmap(pnlMap.Width, pnlMap.Height);
+            z = Graphics.FromImage(z_asBitmap);
+
+            
+            SolidBrush tempObjectbrush = new SolidBrush(Color.FromArgb(0xDC, 0xDC, 0xDC));
+            z.FillRectangle(tempObjectbrush, 0,0, pnlMap.Width, pnlMap.Height);
+
+            for (int i = 0; i < Game.numberOfCountries; ++i)
+            {
+                Point[] tempPoints = Game.GiveCountry(i).corners;
+                Point[] realPoints = new Point[Game.GiveCountry(i).corners.Length];
+
+                for (int j = 0; j < realPoints.Length; ++j)
+                {
+                    realPoints[j].X = (tempPoints[j].X * Factor);
+                    realPoints[j].Y = (tempPoints[j].Y * Factor);
+                }
+
+                tempObjectbrush = new SolidBrush(GetPaleColor(Game.GiveCountry(i).colorOfCountry));
+                z.FillPolygon(tempObjectbrush, realPoints);
+                z.DrawPolygon(stift, realPoints);
+            }
+
+            //pnlMap bekommt Bilddatei zugewiesen
+            pnlMap.BackgroundImage = z_asBitmap;
+            DrawFlag = false;
+        }
+
+
+        /// <summary>
+        /// Gibt blassere Farbe zurück, bei Angriff benötigt
+        /// TODO: mehr Farben aufnehmen
+        /// </summary>
+        /// <param name="ColorIn"></param>
+        /// <returns></returns>
+        private Color GetPaleColor(Color ColorIn)
+        {
+            if (ColorIn == Color.FromArgb(0xEE, 0x2C, 0x2C))
+                return Color.FromArgb(0xFF, 0x6A, 0x6A);
+            else if (Color.FromArgb(0x54, 0x8B, 0x54) == ColorIn)
+                return Color.FromArgb(0x7C, 0xCD, 0x7C);
+            else
+                return Color.White;
+        }
+
+        private void DrawAttackCircle(Country CountryIn)
+        {
+            //graphics initialisieren
+            Graphics temp = pnlMap.CreateGraphics();
+
+            // Für Umrandung, nötig? 
+            Pen tempPen = new Pen(Color.Black);
+
+            // All Eckpunkte der NachbarLänder und des Landes einlesen
+            Point[][] AllPoints = new Point[CountryIn.neighbouringCountries.Length+1][];
+            for (int i = 0;i <= CountryIn.neighbouringCountries.Length;++i)
+            {
+                if (i > 0)
+                    AllPoints[i] = Game.countries[Game.GetCountryIndex(CountryIn.neighbouringCountries[i-1])].corners;
+                else
+                    AllPoints[i] = CountryIn.corners;
+            }
+
+            // höchste und tiefste Werte auslesen
+            int HighestX = 0, HighestY = 0;
+            int LowestX = AllPoints[0][0].X, LowestY = AllPoints[0][0].Y;
+
+            for (int i = 0;i < AllPoints.Length;++i)
+            {
+                for (int j = 0;j < AllPoints[i].Length;++j)
+                {
+                    // X
+                    if (AllPoints[i][j].X > HighestX)
+                        HighestX = AllPoints[i][j].X;
+                    if (AllPoints[i][j].X < LowestX)
+                        LowestX = AllPoints[i][j].X;
+                    // Y
+                    if (AllPoints[i][j].Y > HighestY)
+                        HighestY = AllPoints[i][j].Y;
+                    if (AllPoints[i][j].Y < LowestY)
+                        LowestY = AllPoints[i][j].Y;
+                }
+            }
+            // Faktor ausrechnen
+            int AttackFactor;
+            int temp1 = pnlMap.Width / (HighestX-LowestX);
+            int temp2 = pnlMap.Height / (HighestY-LowestY);
+            if (temp1 > temp2)
+                AttackFactor = temp2;
+            else
+                AttackFactor = temp1;
+
+            // Werte Anpassen
+            for (int i = 0; i < AllPoints.Length; ++i)
+            {
+                for (int j = 0; j < AllPoints[i].Length; ++j)
+                {
+                    AllPoints[i][j].X -= LowestX;
+                    AllPoints[i][j].X *= AttackFactor;
+
+                    AllPoints[i][j].Y -= LowestY;
+                    AllPoints[i][j].Y *= AttackFactor;
+                }
+            }
+
+
+            // MittelPunkte berechnen, später Eckpunkte der Kreise (der Rechtecke die die Kreise umgeben)
+            Point[] MiddlePoints = new Point[AllPoints.Length];
+            for (int i = 0;i < AllPoints.Length;++i)
+            {
+                //MiddlePoints[i] = GetMiddleOfPolygon(GetRealPointsFromCorners(AllPoints[i]));
+                MiddlePoints[i] = GetMiddleOfPolygon(AllPoints[i]);
+            }
+
+            // Mittelpunkte verschieben
+            Rectangle[] Rects = new Rectangle[AllPoints.Length];
+
+
+
+            // zeichnen
+            SolidBrush tempObjectbrush;
+            for (int i = 0;i < MiddlePoints.Length;++i)
+            {
+                if (i == 0)
+                {
+                    tempObjectbrush = new SolidBrush(CountryIn.colorOfCountry);
+                    temp.FillPie(tempObjectbrush, MiddlePoints[i].X - (AttackFactor * 5), MiddlePoints[i].Y - (AttackFactor * 5), AttackFactor * 10, AttackFactor * 10, 0, 270);
+                    //temp.DrawPie(tempPen, MiddlePoints[i].X, MiddlePoints[i].Y, AttackFactor * 10, AttackFactor * 10, 0, 270);
+                }
+                else
+                {
+                    tempObjectbrush = new SolidBrush(Game.countries[Game.GetCountryIndex(CountryIn.neighbouringCountries[i-1])].colorOfCountry);
+                    temp.FillPie(tempObjectbrush, MiddlePoints[i].X - (int)(AttackFactor * 2.5), MiddlePoints[i].Y - (int)(AttackFactor * 2.5), AttackFactor * 5, AttackFactor * 5, 0, 270);
+                    //temp.DrawPie(tempPen, MiddlePoints[i].X, MiddlePoints[i].Y, AttackFactor * 5, AttackFactor * 5, 0, 270);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gibt die Rechtecke aus, in denen die Teilkreise der Länder liegen
+        /// </summary>
+        /// <param name="MiddlePoints"></param>
+        /// <returns></returns>
+        private Rectangle[] ArrangeMiddlePoints(Point[] MiddlePoints)
+        {
+            // Erzeugt AusgabeArray, speichert die Rechtecke ab, in denen später die Kreis(-teile) liegen
+            Rectangle[] Rects = new Rectangle[MiddlePoints.Length];
+            //Höhe und Breite der Karte abspeichern
+            int Height = pnlMap.Height;
+            int Width = pnlMap.Width;
+
+            // Anteile der verschiedenen Kreise am Gesamtteil der Map
+            // Allg: Width = Height, da Quadrate bzw Kreise, keine Ellipsen
+            double MidWidth = 0.4;
+
+            // Land aus dem der Angriff erfolgt, Mitte
+            if(Height < Width)
+                Rects[0] = new Rectangle((int)((Width / 2) - (Height * (MidWidth / 2))), (int)((Height / 2) - (Height * (MidWidth / 2))), 
+                                         (int)(Height * MidWidth), (int)(Height * MidWidth));
+            else
+                Rects[0] = new Rectangle((int)((Width / 2) - (Height * (MidWidth / 2))), (int)((Width / 2) - (Height * (MidWidth / 2))), 
+                                         (int)(Width * MidWidth), (int)(Width * MidWidth));
+
+
+            
+            bool[] TopLane = new bool[MiddlePoints.Length-1];
+            int Counter = 0;
+            // ordnet Ländern Top oder Bot zu
+            for (int i = 0;i < TopLane.Length;++i)
+            {
+                if (MiddlePoints[i+1].Y - ((1/6)*Height) < (5/6)*Height - MiddlePoints[i+1].Y)
+                {
+                    TopLane[i] = true;
+                    Counter++;
+                }
+            }
+
+            // TOP
+            // Breite der Rects Top
+            int SpaceTopWidth = (Width/3)/(Counter + 1);
+            int TopWidth = Width*(2/3)/Counter;
+            // Breite der Rects Bot
+            
+
+            //Sortieren
+            for (int i = 0;TopLane.Length > i;++i)
+            {
+                if (TopLane[i])
+                {
+                    
+                }
+            }
+
+
+            // BOT
+
+            // Festlegen
+            for (int i = 1; i < Rects.Length; ++i)
+            {
+                 if (TopLane[i])
+                 {
+                     Rects[i] = new Rectangle();
+                 }
+                 else
+                 {
+
+                 }
+            }
+            return Rects;
+        }
+
+
+
+
+
+
+
+        //temp
+        private void btnTest2_Click(object sender, EventArgs e)
+        {
+            int i = 5;
+            lblMessage.Text = Game.countries[i].name;
+            DrawAttackCircle(Game.countries[i]);
+        }
+
+        // nicht mehr benötigt
+        /// <summary>
+        /// Gab Eckpunkte der Länder aus
+        /// </summary>
+        /// <param name="Country"></param>
+        //private void Temp(int Country)
+        //{
+        //    //graphics initialisieren
+        //    Graphics temp = pnlMap.CreateGraphics();
+
+
+
+
+        //    Point[] tempPoints = Game.GiveCountry(Country).corners;
+        //    Point[] RealPoints = new Point[Game.GiveCountry(Country).corners.Length];
+
+        //    for (int i = 0; i < RealPoints.Length; ++i)
+        //    {
+        //        RealPoints[i].X = (tempPoints[i].X * Factor);
+        //        RealPoints[i].Y = (tempPoints[i].Y * Factor);
+        //    }
+
+        //    SolidBrush TempObjectbrush = new SolidBrush(Game.GiveCountry(Country).colorOfCountry);
+        //    temp.FillPolygon(TempObjectbrush, RealPoints);
+        //    temp.DrawPolygon(stift, RealPoints);
+
+
+        //    for (int i = 0;i < RealPoints.Length;++i)
+        //    {
+        //        //MittelKreis in Schwarz zeichnen
+        //        SolidBrush tempObjectbrush = new SolidBrush(Color.Black);
+        //        //temp.FillEllipse(tempObjectbrush, Middle.X - 10, Middle.Y - 10, 20, 20);
+
+        //        //zum schreiben
+        //        Font f = new Font("Arial", 10);
+        //        tempObjectbrush = new SolidBrush(Color.Black);
+
+        //        string Coords = Convert.ToString(tempPoints[i].X) + ";" + Convert.ToString(tempPoints[i].Y);
+
+        //        temp.DrawString(Coords, f, tempObjectbrush, RealPoints[i].X, RealPoints[i].Y);
+        //    }
+        //}
     }
 }

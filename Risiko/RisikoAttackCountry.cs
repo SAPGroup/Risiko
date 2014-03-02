@@ -40,6 +40,20 @@ namespace Risiko
             // Namen der Länder übernehmen
             tBAttackerName.Text = Game.countries[AttackerIndex].name;
             tBDefenderName.Text = Game.countries[DefenderIndex].name;
+
+            if (Game.countries[DefenderIndex].owner.numberOfDefenders == 1)
+            {
+                rB1Def.Checked = true;
+                rB1Def.Checked = false;
+            }
+            else if (Game.countries[DefenderIndex].owner.numberOfDefenders == 2)
+            {
+                rB2Def.Checked = true;
+                rB1Def.Checked = false;
+            }
+
+            rB1Def.Enabled = false;
+            rB2Def.Enabled = false;
         }
 
 
@@ -51,6 +65,11 @@ namespace Risiko
         }
 
         private void RisikoAttackCountry_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void rB1Def_CheckedChanged(object sender, EventArgs e)
         {
 
         }
